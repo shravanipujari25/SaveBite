@@ -1,0 +1,46 @@
+[
+  {
+    "id": "shop_01",
+    "name": "Almond Milk Unsweetened",
+    "category": "Dairy Alternatives",
+    "quantity": 1,
+    "unit": "carton",
+    "estimatedPrice": 120.00,
+    "suggestedReason": "Whole milk expiring tomorrow; auto-restock recommendation.",
+    "isAutoSuggested": true,
+    "isCompleted": false
+  },
+  {
+    "id": "shop_02",
+    "name": "Whole Grain Sourdough",
+    "category": "Bakery",
+    "quantity": 1,
+    "unit": "loaf",
+    "estimatedPrice": 85.00,
+    "suggestedReason": "Bread low stock in pantry.",
+    "isAutoSuggested": true,
+    "isCompleted": false
+  },
+  {
+    "id": "shop_03",
+    "name": "Roma Tomatoes",
+    "category": "Produce",
+    "quantity": 500,
+    "unit": "g",
+    "estimatedPrice": 40.00,
+    "suggestedReason": "User added for recipe pairing.",
+    "isAutoSuggested": false,
+    "isCompleted": true
+  },
+  {
+    "id": "shop_04",
+    "name": "Grass-Fed Butter",
+    "category": "Dairy & Eggs",
+    "quantity": 250,
+    "unit": "g",
+    "estimatedPrice": 140.00,
+    "suggestedReason": "Missing ingredient in Avocado & Spinach Melt.",
+    "isAutoSuggested": true,
+    "isCompleted": false
+  }
+]

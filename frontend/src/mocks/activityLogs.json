@@ -1,0 +1,45 @@
+[
+  {
+    "id": "act_01",
+    "type": "opened",
+    "itemId": "item_04",
+    "itemName": "Sourdough Bread",
+    "quantity": 1,
+    "unit": "loaf",
+    "timestamp": "2026-10-24T08:30:00Z",
+    "notes": "Opened for breakfast toast. Priority updated."
+  },
+  {
+    "id": "act_02",
+    "type": "consumed",
+    "itemId": "item_01",
+    "itemName": "Organic Whole Milk",
+    "quantity": 0.5,
+    "unit": "liter",
+    "timestamp": "2026-10-23T19:15:00Z",
+    "valueSaved": 34.00,
+    "notes": "Used in evening tea and cereal."
+  },
+  {
+    "id": "act_03",
+    "type": "added",
+    "itemId": "item_07",
+    "itemName": "Hass Avocados",
+    "quantity": 2,
+    "unit": "pcs",
+    "timestamp": "2026-10-22T14:10:00Z",
+    "notes": "Purchased from farmer's market."
+  },
+  {
+    "id": "act_04",
+    "type": "wasted",
+    "itemId": "item_old_01",
+    "itemName": "Coriander Bunch",
+    "quantity": 1,
+    "unit": "bunch",
+    "timestamp": "2026-10-21T11:00:00Z",
+    "valueLost": 20.00,
+    "reason": "Mold & Wilting",
+    "notes": "Moisture trapped in plastic bag."
+  }
+]

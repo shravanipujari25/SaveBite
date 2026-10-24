@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "fresh": 4,
+    "use_soon": 3,
+    "critical": 3,
+    "expired": 0,
+    "total": 10
+  },
+  "distribution": [
+    { "name": "Fresh (> 5 days)", "key": "fresh", "count": 4, "percentage": 40, "color": "#10b981" },
+    { "name": "Use Soon (2-4 days)", "key": "use_soon", "count": 3, "percentage": 30, "color": "#f59e0b" },
+    { "name": "Critical (<= 1 day)", "key": "critical", "count": 3, "percentage": 30, "color": "#ef4444" },
+    { "name": "Expired", "key": "expired", "count": 0, "percentage": 0, "color": "#94a3b8" }
+  ],
+  "upcomingRiskValue": 16.27,
+  "actionRecommended": "3 items worth $16.27 expire within 24-48 hours. See suggested recipes to cook them tonight."
+}

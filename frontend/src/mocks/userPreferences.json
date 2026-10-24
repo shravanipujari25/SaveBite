@@ -1,0 +1,29 @@
+{
+  "user": {
+    "id": "usr_9918",
+    "name": "Sarah Miller",
+    "email": "sarah.miller@example.com",
+    "householdSize": 2,
+    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    "role": "Household Admin"
+  },
+  "preferences": {
+    "currency": "INR",
+    "currencySymbol": "₹",
+    "temperatureUnit": "°C",
+    "warningDaysThreshold": 3,
+    "criticalDaysThreshold": 1,
+    "notificationsEnabled": true,
+    "pushAlerts": {
+      "expiringItems": true,
+      "sensorWarnings": true,
+      "recipeSuggestions": true,
+      "weeklySummary": false
+    },
+    "dietaryRestrictions": ["Vegetarian-friendly", "Low Sodium"],
+    "ecoGoals": {
+      "monthlySavingsTarget": 2500.0,
+      "zeroWasteStreakTargetDays": 30
+    }
+  }
+}

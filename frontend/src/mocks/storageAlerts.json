@@ -1,0 +1,38 @@
+[
+  {
+    "id": "alert_01",
+    "severity": "warning",
+    "type": "ethylene_gas",
+    "sensorNodeId": "sensor_pantry_01",
+    "zone": "pantry",
+    "title": "Ethylene Gas Warning in Pantry",
+    "message": "Pantry sensor detected 0.9 ppm ethylene gas. Ripe avocados may accelerate aging of nearby items.",
+    "recommendation": "Isolate ripe avocados or move to refrigerator crisper.",
+    "timestamp": "2026-10-24T09:45:00Z",
+    "isRead": false
+  },
+  {
+    "id": "alert_02",
+    "severity": "critical",
+    "type": "expiry_urgent",
+    "sensorNodeId": null,
+    "zone": "fridge",
+    "title": "Fresh Strawberries Expire Today",
+    "message": "250g Strawberries have reached 0 days remaining before spoilage.",
+    "recommendation": "Prepare strawberry yogurt parfait or freeze for smoothies.",
+    "timestamp": "2026-10-24T08:00:00Z",
+    "isRead": false
+  },
+  {
+    "id": "alert_03",
+    "severity": "info",
+    "type": "telemetry_optimal",
+    "sensorNodeId": "sensor_fridge_01",
+    "zone": "fridge",
+    "title": "Fridge Temperature Stabilized",
+    "message": "Temperature holding steady at 3.8°C with 68% humidity. Chilling efficiency 98%.",
+    "recommendation": "No action needed.",
+    "timestamp": "2026-10-24T07:30:00Z",
+    "isRead": true
+  }
+]

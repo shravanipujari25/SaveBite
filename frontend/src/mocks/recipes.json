@@ -1,0 +1,77 @@
+[
+  {
+    "id": "recipe_01",
+    "title": "Avocado & Spinach Sourdough Melt",
+    "description": "Crispy golden toast topped with wilted baby spinach, ripe avocado slices, and melted cheddar.",
+    "prepTimeMinutes": 15,
+    "difficulty": "Easy",
+    "servings": 2,
+    "matchedIngredientsCount": 4,
+    "totalIngredientsCount": 5,
+    "pantryRescueValue": 240.00,
+    "expiringIngredientsUsed": [
+      { "name": "Baby Spinach", "itemId": "item_02", "status": "use_soon" },
+      { "name": "Sourdough Bread", "itemId": "item_04", "status": "critical" },
+      { "name": "Hass Avocados", "itemId": "item_07", "status": "use_soon" },
+      { "name": "Cheddar Cheese Block", "itemId": "item_09", "status": "fresh" }
+    ],
+    "missingIngredients": [
+      { "name": "Butter", "estimatedCost": 25.00 }
+    ],
+    "instructions": [
+      "Toast sourdough slices lightly in a pan with a touch of butter or olive oil.",
+      "Quickly sauté baby spinach until soft (approx. 1 minute).",
+      "Layer spinach and ripe avocado slices on sourdough.",
+      "Top with sliced cheddar and cover under low heat until cheese melts smoothly."
+    ],
+    "tags": ["Quick", "Waste-Rescue", "Vegetarian", "High Protein"]
+  },
+  {
+    "id": "recipe_02",
+    "title": "Strawberry Greek Yogurt Compote Bowl",
+    "description": "Rich creamy Greek yogurt layered with warm simmered strawberry compote and crushed seeds.",
+    "prepTimeMinutes": 10,
+    "difficulty": "Beginner",
+    "servings": 2,
+    "matchedIngredientsCount": 3,
+    "totalIngredientsCount": 3,
+    "pantryRescueValue": 195.00,
+    "expiringIngredientsUsed": [
+      { "name": "Strawberries", "itemId": "item_10", "status": "critical" },
+      { "name": "Greek Yogurt Vanilla", "itemId": "item_03", "status": "use_soon" },
+      { "name": "Organic Whole Milk", "itemId": "item_01", "status": "critical" }
+    ],
+    "missingIngredients": [],
+    "instructions": [
+      "Dice strawberries and simmer in a small saucepan with 1 tbsp water for 4-5 minutes until jammy.",
+      "Whisk cold milk into Greek yogurt for desired silky texture.",
+      "Spoon strawberry compote over yogurt and serve immediately."
+    ],
+    "tags": ["No-Waste Breakfast", "Dessert", "High Fiber"]
+  },
+  {
+    "id": "recipe_03",
+    "title": "Skillet Cheddar & Veggie Omelet",
+    "description": "Fluffy free-range eggs folded around wilted greens and sharp melted cheddar.",
+    "prepTimeMinutes": 12,
+    "difficulty": "Easy",
+    "servings": 1,
+    "matchedIngredientsCount": 4,
+    "totalIngredientsCount": 4,
+    "pantryRescueValue": 180.00,
+    "expiringIngredientsUsed": [
+      { "name": "Free-Range Large Eggs", "itemId": "item_05", "status": "fresh" },
+      { "name": "Baby Spinach", "itemId": "item_02", "status": "use_soon" },
+      { "name": "Organic Whole Milk", "itemId": "item_01", "status": "critical" },
+      { "name": "Cheddar Cheese Block", "itemId": "item_09", "status": "fresh" }
+    ],
+    "missingIngredients": [],
+    "instructions": [
+      "Beat 2 eggs with a splash of milk and pinch of salt.",
+      "Sauté spinach in a skillet with olive oil until tender.",
+      "Pour beaten eggs over spinach and cook on medium-low.",
+      "Sprinkle cheddar, fold in half, and serve."
+    ],
+    "tags": ["Keto Friendly", "Breakfast", "Under 15 Mins"]
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "totalItems": 10,
+  "expiringSoonCount": 3,
+  "healthScore": 84,
+  "estimatedMonthlySavings": 78.50,
+  "wasteReductionRate": 82,
+  "carbonFootprintPreventedKg": 14.6,
+  "activeSensorNodes": 3,
+  "streakDays": 19,
+  "weeklyPantryFlow": {
+    "consumed": 18,
+    "wasted": 2,
+    "added": 14
+  },
+  "zones": [
+    { "id": "fridge", "name": "Main Refrigerator", "itemCount": 6, "health": "Optimal", "temp": 3.8 },
+    { "id": "pantry", "name": "Dry Food Pantry", "itemCount": 3, "health": "Good", "temp": 21.2 },
+    { "id": "freezer", "name": "Deep Freezer", "itemCount": 1, "health": "Optimal", "temp": -18.4 }
+  ]
+}

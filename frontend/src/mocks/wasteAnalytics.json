@@ -1,0 +1,26 @@
+{
+  "monthlySummary": {
+    "month": "October 2026",
+    "totalSpent": 342.10,
+    "totalSaved": 78.50,
+    "totalWasted": 14.20,
+    "wasteReductionPercentage": 82,
+    "carbonSavedKg": 14.6
+  },
+  "weeklyTrends": [
+    { "week": "Week 1", "saved": 16.5, "wasted": 8.2, "consumedRate": 78 },
+    { "week": "Week 2", "saved": 21.0, "wasted": 4.5, "consumedRate": 85 },
+    { "week": "Week 3", "saved": 19.8, "wasted": 1.5, "consumedRate": 92 },
+    { "week": "Week 4", "saved": 21.2, "wasted": 0.0, "consumedRate": 96 }
+  ],
+  "topWastedCategories": [
+    { "category": "Produce (Leafy Greens)", "loss": 7.40, "count": 2, "percentage": 52 },
+    { "category": "Bakery", "loss": 4.50, "count": 1, "percentage": 32 },
+    { "category": "Dairy", "loss": 2.30, "count": 1, "percentage": 16 }
+  ],
+  "preventionTips": [
+    "Wrap leafy greens in paper towels to absorb excess moisture and extend shelf life by 4 days.",
+    "Slice and freeze half of your sourdough loaf on day 2.",
+    "Store dairy on middle shelves instead of door racks where temperature fluctuates."
+  ]
+}
