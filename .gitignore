@@ -1,0 +1,138 @@
+
+# ==========================================
+# SaveBite - Root Git Ignore
+# ==========================================
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Node.js dependencies
+node_modules/
+bower_components/
+jspm_packages/
+web_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+npm-debug.log.*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Testing and coverage
+coverage/
+*.lcov
+.nyc_output/
+lib-cov/
+.vscode-test/
+
+# Build output
+dist/
+build/
+build/Release/
+out/
+.next/
+.nuxt/
+.vuepress/dist/
+.serverless/
+
+# Package manager and caches
+.npm/
+.cache/
+.parcel-cache/
+.grunt/
+.fusebox/
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# TypeScript and ESLint caches
+*.tsbuildinfo
+.eslintcache
+.tern-port
+
+# Node.js tools
+.lock-wscript
+.node_repl_history
+*.tgz
+.yarn-integrity
+.dynamodb/
+
+# Backup files
+**/*.backup.*
+**/*.back.*
+*.bak
+*.tmp
+
+# Design files
+*.sublime*
+*.psd
+*.sketch
+*.thumb
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python cache and test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+htmlcov/
+
+# AI datasets and generated artifacts
+ai/data/
+ai/models/*.joblib
+ai/models/*.pkl
+
+# Local databases
+*.sqlite
+*.sqlite3
+*.db
+
+# IDE settings
+.idea/
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Operating system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100/
+.Trashes/
+Thumbs.db
+Desktop.ini
+
+# Temporary editor files
+*~
+*.swp
+*.swo
+
+# Supabase local development
+supabase/.temp/
+
+# End of SaveBite Git Ignore
