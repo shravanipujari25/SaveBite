@@ -51,9 +51,15 @@ export function StoragePage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Badge variant="fresh" dot size="md">
-            MQTT Broker Connected
-          </Badge>
+          {sensors && sensors.length > 0 ? (
+            <Badge variant={sensors.some((s) => s.status === 'online') ? 'fresh' : 'neutral'} dot size="md">
+              {sensors.some((s) => s.status === 'online') ? 'IoT Device Online' : 'IoT Standby / Offline'}
+            </Badge>
+          ) : (
+            <Badge variant="neutral" dot size="md">
+              No Devices Configured
+            </Badge>
+          )}
           <Button variant="outline" size="sm" icon={RefreshCw} onClick={refresh}>
             Sync
           </Button>
@@ -69,11 +75,17 @@ export function StoragePage() {
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
               Active Sensor Hardware Nodes ({sensors.length})
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {sensors.map((sensor) => (
-                <SensorGauge key={sensor.nodeId} sensor={sensor} />
-              ))}
-            </div>
+            {sensors.length === 0 ? (
+              <div className="p-6 text-center text-xs text-slate-500 bg-white rounded-2xl border border-slate-200">
+                No active sensor nodes registered in your household. Pair an ESP32 hardware device to stream live environmental data.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {sensors.map((sensor) => (
+                  <SensorGauge key={sensor.nodeId} sensor={sensor} />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Environmental Storage Alerts */}
@@ -118,9 +130,9 @@ export function StoragePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               {/* Temperature */}
               <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={sensors.map(s => ({ time: s.lastUpdated, value: s.temperature }))}>
+                <LineChart data={sensors.map(s => ({ time: s.lastSync || s.lastUpdated || new Date().toISOString(), value: s.temperature }))}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="time" tickFormatter={t => new Date(t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} />
+                  <XAxis dataKey="time" tickFormatter={t => t ? new Date(t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ''} />
                   <YAxis domain={['auto', 'auto']} />
                   <Tooltip labelFormatter={t => `Time: ${new Date(t).toLocaleString()}`} />
                   <Line type="monotone" dataKey="value" stroke="#10b981" dot={false} />
@@ -128,9 +140,9 @@ export function StoragePage() {
               </ResponsiveContainer>
               {/* Humidity */}
               <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={sensors.map(s => ({ time: s.lastUpdated, value: s.humidity }))}>
+                <LineChart data={sensors.map(s => ({ time: s.lastSync || s.lastUpdated || new Date().toISOString(), value: s.humidity }))}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="time" tickFormatter={t => new Date(t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} />
+                  <XAxis dataKey="time" tickFormatter={t => t ? new Date(t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ''} />
                   <YAxis domain={['auto', 'auto']} />
                   <Tooltip labelFormatter={t => `Time: ${new Date(t).toLocaleString()}`} />
                   <Line type="monotone" dataKey="value" stroke="#3b82f6" dot={false} />
@@ -138,9 +150,9 @@ export function StoragePage() {
               </ResponsiveContainer>
               {/* VOC */}
               <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={sensors.map(s => ({ time: s.lastUpdated, value: s.voc }))}>
+                <LineChart data={sensors.map(s => ({ time: s.lastSync || s.lastUpdated || new Date().toISOString(), value: s.voc ?? Math.round((s.ethyleneGasPpm || 0) * 100) }))}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="time" tickFormatter={t => new Date(t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} />
+                  <XAxis dataKey="time" tickFormatter={t => t ? new Date(t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ''} />
                   <YAxis domain={['auto', 'auto']} />
                   <Tooltip labelFormatter={t => `Time: ${new Date(t).toLocaleString()}`} />
                   <Line type="monotone" dataKey="value" stroke="#ef4444" dot={false} />

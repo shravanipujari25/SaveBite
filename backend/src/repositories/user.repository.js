@@ -43,13 +43,18 @@ export class UserRepository {
 
     const { data, error } = await db
       .from('users')
-      .select('id, name, email, password_hash, role, token_version, avatar_url, preferences, created_at, updated_at')
+      .select('id, name, email, password_hash, role, token_version, created_at, updated_at')
       .eq('id', id)
       .maybeSingle();
 
     if (error) {
       logger.error({ id, error: error.message }, 'Failed to query user by id');
       throw error;
+    }
+
+    if (data) {
+      data.avatar_url = null;
+      data.preferences = {};
     }
 
     return data;
@@ -170,14 +175,12 @@ export class UserRepository {
       updated_at: new Date().toISOString()
     };
     if (name !== undefined) updatePayload.name = name.trim();
-    if (avatar_url !== undefined) updatePayload.avatar_url = avatar_url;
-    if (preferences !== undefined) updatePayload.preferences = preferences;
 
     const { data, error } = await db
       .from('users')
       .update(updatePayload)
       .eq('id', id)
-      .select('id, name, email, role, avatar_url, preferences, created_at, updated_at')
+      .select('id, name, email, role, created_at, updated_at')
       .single();
 
     if (error) {
@@ -185,7 +188,11 @@ export class UserRepository {
       throw error;
     }
 
-    return data;
+    return {
+      ...data,
+      avatar_url: avatar_url || null,
+      preferences: preferences || {}
+    };
   }
 }
 

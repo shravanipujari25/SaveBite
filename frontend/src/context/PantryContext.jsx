@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { inventoryService } from '../api/inventoryService'
+import { useAuth } from './AuthContext'
 
 const PantryContext = createContext(null)
 
 export function PantryProvider({ children }) {
+  const { isAuthenticated, loading: authLoading } = useAuth()
   const [items, setItems] = useState([])
   const [activityLogs, setActivityLogs] = useState([])
   const [dashboardSummary, setDashboardSummary] = useState(null)
@@ -11,6 +13,15 @@ export function PantryProvider({ children }) {
   const [error, setError] = useState(null)
 
   const reloadAll = useCallback(async () => {
+    // Prevent unauthenticated calls during login/logout or initial bootstrap
+    if (!isAuthenticated) {
+      setItems([])
+      setDashboardSummary(null)
+      setActivityLogs([])
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
     setError(null)
     try {
@@ -30,11 +41,13 @@ export function PantryProvider({ children }) {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [isAuthenticated])
 
   useEffect(() => {
-    reloadAll()
-  }, [reloadAll])
+    if (!authLoading) {
+      reloadAll()
+    }
+  }, [reloadAll, authLoading, isAuthenticated])
 
   const addItem = async (itemData) => {
     const { data, error } = await inventoryService.addItem(itemData)

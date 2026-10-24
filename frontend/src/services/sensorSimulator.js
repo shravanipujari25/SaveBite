@@ -149,3 +149,14 @@ export function getCurrentAlerts() {
 export function getSimulationInfo() {
   return { isRunning, lastUpdated }
 }
+
+export const getSimulationStatus = getSimulationInfo
+
+export default {
+  startSimulation,
+  stopSimulation,
+  getCurrentSensors,
+  getCurrentAlerts,
+  getSimulationInfo,
+  getSimulationStatus,
+}

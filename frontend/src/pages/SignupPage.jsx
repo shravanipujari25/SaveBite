@@ -40,8 +40,8 @@ export function SignupPage() {
       errs.password = 'Password is required'
     } else if (password.length < 8) {
       errs.password = 'Password must be at least 8 characters'
-    } else if (!/(?=.*[a-zA-Z])(?=.*[0-9])/.test(password)) {
-      errs.password = 'Password must include at least one letter and one number'
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(password)) {
+      errs.password = 'Password must include uppercase, lowercase, number, and special character (!@#$%^&*)'
     }
 
     if (!householdSize || Number(householdSize) < 1) {
@@ -161,7 +161,7 @@ export function SignupPage() {
 
           <div className="relative">
             <Input
-              label="Password (min 8 chars)"
+              label="Password (8+ chars, A-Z, 0-9, symbol)"
               type={showPassword ? 'text' : 'password'}
               required
               leftIcon={Lock}

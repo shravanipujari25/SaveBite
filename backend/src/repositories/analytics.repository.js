@@ -47,7 +47,7 @@ export class AnalyticsRepository {
     const db = client || this.getClient();
 
     const { data, error } = await db
-      .from('avoided_waste_log')
+      .from('avoided_waste_logs')
       .select('*')
       .eq('household_id', householdId)
       .gte('consumed_at', startDate)
@@ -73,7 +73,7 @@ export class AnalyticsRepository {
     const db = client || this.getClient();
 
     const { data, error } = await db
-      .from('avoided_waste_log')
+      .from('avoided_waste_logs')
       .insert({
         household_id: logData.household_id,
         inventory_item_id: logData.inventory_item_id || null,

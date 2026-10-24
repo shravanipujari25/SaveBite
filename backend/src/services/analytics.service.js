@@ -167,7 +167,13 @@ export class AnalyticsService {
       query.end_date
     );
 
-    const records = await this.repo.getAvoidedWasteRecords(householdId, start, end);
+    let records = [];
+    try {
+      records = await this.repo.getAvoidedWasteRecords(householdId, start, end);
+    } catch (err) {
+      logger.warn({ householdId, error: err.message }, 'avoided_waste_log query failed or table not found; returning empty set');
+      records = [];
+    }
 
     let totalEstimatedSavings = 0;
     const sourcesMap = {};

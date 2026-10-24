@@ -365,7 +365,6 @@ export class InventoryRepository {
       .insert({
         household_id: householdId,
         inventory_item_id: id,
-        item_name: item.name,
         quantity,
         unit: item.unit,
         reason,
@@ -403,7 +402,10 @@ export class InventoryRepository {
 
     return {
       item: updatedItem,
-      wasteLog
+      wasteLog: {
+        ...wasteLog,
+        item_name: wasteLog?.item_name || item.name
+      }
     };
   }
 
@@ -607,7 +609,7 @@ export class InventoryRepository {
       .from('inventory_items')
       .update({
         ...updates,
-        last_intelligence_at: new Date().toISOString()
+        updated_at: new Date().toISOString()
       })
       .eq('id', itemId)
       .eq('household_id', householdId)
@@ -770,7 +772,7 @@ export class InventoryRepository {
 
           // Record in avoided_waste_log
           await db
-            .from('avoided_waste_log')
+            .from('avoided_waste_logs')
             .insert({
               household_id: householdId,
               inventory_item_id: item.id,

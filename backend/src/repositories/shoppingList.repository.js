@@ -26,7 +26,7 @@ export class ShoppingListRepository {
         category: itemData.category || 'other',
         notes: itemData.notes || null,
         is_purchased: false,
-        added_by: itemData.added_by || null
+        created_by: itemData.created_by || itemData.added_by || null
       })
       .select('*')
       .single();

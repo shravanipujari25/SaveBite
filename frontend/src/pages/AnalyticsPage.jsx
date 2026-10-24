@@ -120,20 +120,26 @@ export function AnalyticsPage() {
                 subtitle="High-risk food groups requiring storage adjustments"
               />
               <div className="space-y-3">
-                {data.topWastedCategories.map((cat, idx) => (
-                  <div key={idx} className="space-y-1">
-                    <div className="flex justify-between text-xs font-semibold">
-                      <span className="text-slate-800">{cat.category}</span>
-                      <span className="text-rose-600 font-bold">{formatCurrency(cat.loss)} lost</span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                      <div
-                        className="bg-rose-500 h-2 rounded-full"
-                        style={{ width: `${cat.percentage}%` }}
-                      />
-                    </div>
+                {(!data.topWastedCategories || data.topWastedCategories.length === 0) ? (
+                  <div className="p-4 text-center text-xs text-slate-500 bg-slate-50 rounded-xl">
+                    No food waste recorded for this period. Great job keeping your kitchen waste-free!
                   </div>
-                ))}
+                ) : (
+                  data.topWastedCategories.map((cat, idx) => (
+                    <div key={idx} className="space-y-1">
+                      <div className="flex justify-between text-xs font-semibold">
+                        <span className="text-slate-800">{cat.category}</span>
+                        <span className="text-rose-600 font-bold">{formatCurrency(cat.loss)} lost</span>
+                      </div>
+                      <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                        <div
+                          className="bg-rose-500 h-2 rounded-full"
+                          style={{ width: `${cat.percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </Card>
 

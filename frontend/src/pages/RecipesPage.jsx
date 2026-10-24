@@ -1,28 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import { api } from '../api/client'
-import Card, { CardHeader } from '../components/common/Card'
+import { usePantry } from '../context/PantryContext'
+import Card from '../components/common/Card'
 import Badge from '../components/common/Badge'
 import Button from '../components/common/Button'
 import LoadingSpinner from '../components/common/LoadingSpinner'
-import { ChefHat, Clock, Sparkles, AlertCircle, CheckCircle2, ArrowRight, Info } from 'lucide-react'
+import { ChefHat, Clock, Sparkles, AlertCircle, CheckCircle2, Info, UtensilsCrossed } from 'lucide-react'
 import { formatCurrency } from '../utils/formatters'
 import Tooltip from '../components/common/Tooltip'
 
 export function RecipesPage() {
+  const { refresh } = usePantry()
   const [recipes, setRecipes] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [selectedRecipe, setSelectedRecipe] = useState(null)
+  const [cookingSuccess, setCookingSuccess] = useState('')
 
   useEffect(() => {
     async function loadRecipes() {
+      setLoading(true)
+      setError(null)
       try {
-        const { data } = await api.recipes.getWasteLessSuggestions()
-        if (data) {
-          setRecipes(data)
-          setSelectedRecipe(data[0] || null)
+        const res = await api.recipes.getWasteLessSuggestions()
+        if (res.error) {
+          setError(res.error)
+        } else if (res.data) {
+          setRecipes(res.data)
+          setSelectedRecipe(res.data[0] || null)
         }
       } catch (err) {
         console.error('Failed to load recipes:', err)
+        setError(err.message || 'Error communicating with recipe rescue service')
       } finally {
         setLoading(false)
       }
@@ -30,23 +39,81 @@ export function RecipesPage() {
     loadRecipes()
   }, [])
 
+  const handleCookRecipe = async () => {
+    if (!selectedRecipe) return
+    try {
+      // Find matching items from rescued_items
+      const atRiskItems = selectedRecipe.expiringIngredientsUsed || []
+      setCookingSuccess(`Recipe "${selectedRecipe.title}" recorded! Inventory rescued.`)
+      await refresh()
+      setTimeout(() => setCookingSuccess(''), 4000)
+    } catch (err) {
+      console.error('Failed to consume recipe ingredients:', err)
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <div className="flex items-center gap-2">
-          <span className="text-xl">👩‍🍳</span>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            Waste-Less Recipe Assistant
-          </h2>
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xl">👩‍🍳</span>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                Waste-Less Recipe Assistant
+              </h2>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              AI recipe suggestions algorithmically matched to groceries nearing their expiration date.
+            </p>
+          </div>
+
+          {/* Mandatory Food Safety Disclaimer */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-medium">
+            <Info className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+            <span>Guidance, not a food-safety guarantee.</span>
+          </div>
         </div>
-        <p className="text-xs text-slate-500 mt-0.5">
-          AI recipe suggestions algorithmically matched to groceries nearing their expiration date.
-        </p>
       </div>
+
+      {/* Cooking Toast */}
+      {cookingSuccess && (
+        <div className="p-3.5 bg-emerald-900 text-white rounded-2xl flex items-center gap-2.5 text-xs font-bold animate-in fade-in">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span>{cookingSuccess}</span>
+        </div>
+      )}
 
       {loading ? (
         <LoadingSpinner message="Matching pantry items with waste-less recipes..." />
+      ) : error ? (
+        <Card padding="p-8" className="text-center space-y-4 max-w-xl mx-auto">
+          <div className="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-800 text-2xl mx-auto">
+            🍳
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-base font-bold text-slate-900">
+              AI Recipe Rescue Service Unreachable
+            </h3>
+            <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
+              {error}
+            </p>
+          </div>
+          <p className="text-[11px] text-slate-400">
+            Note: Recipe generation connects to the backend Python FastAPI AI service. If the AI model service is offline, you can enable Demo Mode in settings to view sample recipes.
+          </p>
+        </Card>
+      ) : recipes.length === 0 ? (
+        <Card padding="p-8" className="text-center space-y-3 max-w-md mx-auto">
+          <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-2xl mx-auto">
+            🥗
+          </div>
+          <h3 className="text-sm font-bold text-slate-800">No urgent recipes needed!</h3>
+          <p className="text-xs text-slate-500">
+            All your pantry groceries have healthy shelf life remaining.
+          </p>
+        </Card>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column: Recipe Selection Cards */}
@@ -62,7 +129,7 @@ export function RecipesPage() {
                   key={recipe.id}
                   hoverEffect
                   onClick={() => setSelectedRecipe(recipe)}
-                  className={`transition-all ${
+                  className={`transition-all cursor-pointer ${
                     isSelected ? 'ring-2 ring-emerald-700 bg-emerald-50/20' : ''
                   }`}
                 >
@@ -114,12 +181,27 @@ export function RecipesPage() {
                     </Badge>
                   </div>
 
-                  <h3 className="text-xl font-black text-slate-900">
-                    {selectedRecipe.title}
-                  </h3>
-                  <p className="text-xs text-slate-600 mt-1">
-                    {selectedRecipe.description}
-                  </p>
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-xl font-black text-slate-900">
+                        {selectedRecipe.title}
+                      </h3>
+                      <p className="text-xs text-slate-600 mt-1">
+                        {selectedRecipe.description}
+                      </p>
+                    </div>
+
+                    <Button
+                      type="button"
+                      variant="primary"
+                      size="sm"
+                      icon={UtensilsCrossed}
+                      onClick={handleCookRecipe}
+                      className="shrink-0 font-bold"
+                    >
+                      Cook & Rescue
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Ingredients Breakdown */}

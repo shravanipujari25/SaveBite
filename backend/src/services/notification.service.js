@@ -29,6 +29,18 @@ export class NotificationService {
     logger.info({ notificationId, householdId }, 'Notification marked as read');
     return updated;
   }
+
+  /**
+   * Mark all unread notifications as read for a household.
+   *
+   * @param {string} householdId
+   * @returns {Promise<object[]>}
+   */
+  async markAllAsRead(householdId) {
+    const updated = await this.notificationRepo.markAllAsRead(householdId);
+    logger.info({ householdId, count: updated.length }, 'All notifications marked as read');
+    return updated;
+  }
 }
 
 export const notificationService = new NotificationService();

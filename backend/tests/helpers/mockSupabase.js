@@ -80,7 +80,8 @@ export const createMockDatabaseClient = async (options = {}) => {
       case 'receipt_items': return receiptItemsTable;
       case 'freshness_scans': return freshnessScansTable;
       case 'shopping_list_items': return shoppingListTable;
-      case 'avoided_waste_log': return avoidedWasteLogTable;
+      case 'avoided_waste_log':
+      case 'avoided_waste_logs': return avoidedWasteLogTable;
       case 'device_pairing_tokens': return devicePairingTokensTable;
       default: return null;
     }
@@ -162,8 +163,20 @@ export const createMockDatabaseClient = async (options = {}) => {
       const filterPredicate = (record) => {
         for (const f of filters) {
           const val = record[f.col];
-          if (f.op === 'eq' && String(val) !== String(f.val)) return false;
-          if (f.op === 'neq' && String(val) === String(f.val)) return false;
+          if (f.op === 'eq') {
+            if (f.val === null || f.val === undefined) {
+              if (val !== null && val !== undefined) return false;
+            } else if (String(val) !== String(f.val)) {
+              return false;
+            }
+          }
+          if (f.op === 'neq') {
+            if (f.val === null || f.val === undefined) {
+              if (val === null || val === undefined) return false;
+            } else if (String(val) === String(f.val)) {
+              return false;
+            }
+          }
           if (f.op === 'ilike' && (!val || !String(val).toLowerCase().includes(String(f.val).toLowerCase()))) return false;
           if (f.op === 'in' && (!Array.isArray(f.val) || !f.val.includes(val))) return false;
           if (f.op === 'gte' && !(val >= f.val)) return false;

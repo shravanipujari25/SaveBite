@@ -13,26 +13,45 @@ export const createApp = () => {
   // Trust reverse proxies (e.g. Nginx, Fly.io, Render, Cloudflare) for accurate rate limiting and IP resolution
   app.set('trust proxy', 1);
 
-  // Apply Helmet for secure HTTP headers
-  app.use(helmet());
+  // Apply Helmet with cross-origin resource policy enabled for SPA API consumption
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' }
+    })
+  );
 
-  // Strict CORS policy restricted to the configured FRONTEND_URL
-  const allowedOrigins = [env.FRONTEND_URL];
+  // Parse configured frontend URLs and support comma-separated origins
+  const configuredOrigins = [
+    env.FRONTEND_URL,
+    ...(process.env.ADDITIONAL_ALLOWED_ORIGINS || '').split(',').map((s) => s.trim())
+  ].filter(Boolean);
+
+  const isOriginAllowed = (origin) => {
+    // Permit server-to-server, curl, Postman, or local scripts
+    if (!origin) return true;
+    if (configuredOrigins.includes(origin)) return true;
+
+    // In development or test, dynamically permit any localhost or 127.0.0.1 port (e.g. 5173, 5174, 5175, 3000)
+    if (env.NODE_ENV !== 'production') {
+      if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   app.use(
     cors({
       origin: (origin, callback) => {
-        // Allow requests with no origin (e.g., server-to-server or curl) in development/test
-        if (!origin) {
-          return callback(null, true);
-        }
-        if (allowedOrigins.includes(origin)) {
+        if (isOriginAllowed(origin)) {
           return callback(null, true);
         }
         return callback(new AppError('CORS origin unauthorized', 403, 'CORS_REJECTED'));
       },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+      optionsSuccessStatus: 204
     })
   );
 

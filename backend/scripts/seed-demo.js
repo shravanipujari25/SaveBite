@@ -50,7 +50,7 @@ async function upsertRecord(db, table, record, conflictCol = 'id') {
   if (existing) {
     const { data: updated, error } = await db
       .from(table)
-      .update({ ...record, updated_at: new Date().toISOString() })
+      .update(record)
       .eq(conflictCol, record[conflictCol])
       .select('*')
       .single();
@@ -100,21 +100,13 @@ export async function seedDemo(client = null) {
     email: 'demo@savebite.com',
     password_hash: passwordHash,
     role: 'user',
-    token_version: 1,
-    avatar_url: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=150',
-    preferences: { theme: 'system', alert_notifications: true }
+    token_version: 1
   });
 
   // 3. Demo Household
   const demoHousehold = await upsertRecord(db, 'households', {
     id: DEMO_IDS.HOUSEHOLD_ID,
-    name: 'SaveBite Demo Smart Kitchen',
-    settings: {
-      alert_on_critical: true,
-      alert_on_use_soon: true,
-      timezone: 'America/New_York',
-      currency: 'USD'
-    }
+    name: 'SaveBite Demo Smart Kitchen'
   });
 
   // 4. Household Membership
@@ -151,8 +143,8 @@ export async function seedDemo(client = null) {
       expiry_date: daysAhead(1),
       is_opened: false,
       use_first_score: 92,
-      adj_days_left: 1.0,
-      freshness_bucket: 'critical',
+      adj_days_left: 1,
+      freshness_bucket: 'use_soon',
       status: 'active'
     },
     {
@@ -161,13 +153,13 @@ export async function seedDemo(client = null) {
       category: 'produce',
       quantity: 2,
       unit: 'piece',
-      storage_location: 'countertop',
+      storage_location: 'counter',
       estimated_unit_price: 1.50,
       purchase_date: daysAgo(3),
       expiry_date: daysAhead(2),
       is_opened: false,
       use_first_score: 75,
-      adj_days_left: 2.5,
+      adj_days_left: 2,
       freshness_bucket: 'use_soon',
       status: 'active'
     },
@@ -184,8 +176,8 @@ export async function seedDemo(client = null) {
       is_opened: true,
       opened_at: daysAgo(4),
       use_first_score: 88,
-      adj_days_left: 1.2,
-      freshness_bucket: 'critical',
+      adj_days_left: 1,
+      freshness_bucket: 'use_soon',
       status: 'active'
     },
     {
@@ -193,14 +185,14 @@ export async function seedDemo(client = null) {
       name: 'Greek Yogurt',
       category: 'dairy',
       quantity: 2,
-      unit: 'cup',
+      unit: 'item',
       storage_location: 'refrigerator',
       estimated_unit_price: 1.99,
       purchase_date: daysAgo(4),
       expiry_date: daysAhead(8),
       is_opened: false,
       use_first_score: 30,
-      adj_days_left: 7.0,
+      adj_days_left: 7,
       freshness_bucket: 'fresh',
       status: 'active'
     },
@@ -209,7 +201,7 @@ export async function seedDemo(client = null) {
       name: 'Artisan Sourdough Loaf',
       category: 'bakery',
       quantity: 1,
-      unit: 'loaf',
+      unit: 'item',
       storage_location: 'pantry',
       estimated_unit_price: 5.50,
       purchase_date: daysAgo(2),
@@ -217,7 +209,7 @@ export async function seedDemo(client = null) {
       is_opened: true,
       opened_at: daysAgo(2),
       use_first_score: 65,
-      adj_days_left: 2.0,
+      adj_days_left: 2,
       freshness_bucket: 'use_soon',
       status: 'active'
     },
@@ -234,7 +226,7 @@ export async function seedDemo(client = null) {
       is_opened: true,
       opened_at: daysAgo(7),
       use_first_score: 10,
-      adj_days_left: 180.0,
+      adj_days_left: 180,
       freshness_bucket: 'fresh',
       status: 'active'
     },
@@ -243,14 +235,14 @@ export async function seedDemo(client = null) {
       name: 'Fusilli Pasta',
       category: 'pantry',
       quantity: 2,
-      unit: 'box',
+      unit: 'pack',
       storage_location: 'pantry',
       estimated_unit_price: 1.89,
       purchase_date: daysAgo(7),
       expiry_date: daysAhead(365),
       is_opened: false,
       use_first_score: 5,
-      adj_days_left: 365.0,
+      adj_days_left: 365,
       freshness_bucket: 'fresh',
       status: 'active'
     },
@@ -267,7 +259,7 @@ export async function seedDemo(client = null) {
       is_opened: true,
       opened_at: daysAgo(2),
       use_first_score: 72,
-      adj_days_left: 2.5,
+      adj_days_left: 3,
       freshness_bucket: 'use_soon',
       status: 'active'
     },
@@ -276,14 +268,14 @@ export async function seedDemo(client = null) {
       name: 'Wild Blueberries',
       category: 'frozen',
       quantity: 1,
-      unit: 'bag',
+      unit: 'pack',
       storage_location: 'freezer',
       estimated_unit_price: 3.99,
       purchase_date: daysAgo(7),
       expiry_date: daysAhead(120),
       is_opened: false,
       use_first_score: 15,
-      adj_days_left: 120.0,
+      adj_days_left: 120,
       freshness_bucket: 'fresh',
       status: 'active'
     },
@@ -292,7 +284,7 @@ export async function seedDemo(client = null) {
       name: 'Leftover Vegetable Curry',
       category: 'leftovers',
       quantity: 1,
-      unit: 'container',
+      unit: 'serving',
       storage_location: 'refrigerator',
       estimated_unit_price: 6.00,
       purchase_date: daysAgo(3),
@@ -300,8 +292,8 @@ export async function seedDemo(client = null) {
       is_opened: true,
       opened_at: daysAgo(3),
       use_first_score: 95,
-      adj_days_left: 0.8,
-      freshness_bucket: 'critical',
+      adj_days_left: 1,
+      freshness_bucket: 'use_soon',
       status: 'active'
     }
   ];
@@ -311,8 +303,7 @@ export async function seedDemo(client = null) {
       ...item,
       household_id: demoHousehold.id,
       created_by: demoUser.id,
-      currency: 'USD',
-      last_intelligence_at: daysAgo(0.1)
+      currency: 'USD'
     });
   }
 
@@ -322,7 +313,7 @@ export async function seedDemo(client = null) {
       id: DEMO_IDS.SHOPPING.BASIL,
       name: 'Fresh Basil',
       quantity: 1,
-      unit: 'bunch',
+      unit: 'pack',
       category: 'produce',
       is_purchased: false
     },
@@ -338,7 +329,7 @@ export async function seedDemo(client = null) {
       id: DEMO_IDS.SHOPPING.ALMOND_MILK,
       name: 'Unsweetened Almond Milk',
       quantity: 1,
-      unit: 'carton',
+      unit: 'bottle',
       category: 'dairy',
       is_purchased: true,
       purchased_at: daysAgo(2)
@@ -349,7 +340,7 @@ export async function seedDemo(client = null) {
     await upsertRecord(db, 'shopping_list_items', {
       ...shop,
       household_id: demoHousehold.id,
-      added_by: demoUser.id
+      created_by: demoUser.id
     });
   }
 
@@ -358,11 +349,10 @@ export async function seedDemo(client = null) {
     {
       id: DEMO_IDS.WASTE.BREAD,
       household_id: demoHousehold.id,
-      item_name: 'White Sandwich Bread',
-      category: 'bakery',
+      inventory_item_id: DEMO_IDS.ITEMS.SOURDOUGH,
       quantity: 0.5,
-      unit: 'loaf',
-      reason: 'mold',
+      unit: 'pack',
+      reason: 'spoiled',
       estimated_value: 1.75,
       wasted_at: daysAgo(2),
       recorded_by: demoUser.id
@@ -370,11 +360,10 @@ export async function seedDemo(client = null) {
     {
       id: DEMO_IDS.WASTE.LEMON,
       household_id: demoHousehold.id,
-      item_name: 'Lemon',
-      category: 'produce',
+      inventory_item_id: null,
       quantity: 1,
       unit: 'piece',
-      reason: 'dried_out',
+      reason: 'spoiled',
       estimated_value: 0.75,
       wasted_at: daysAgo(4),
       recorded_by: demoUser.id
@@ -415,8 +404,14 @@ export async function seedDemo(client = null) {
     }
   ];
 
+  let avoidedWasteRecordsSeeded = 0;
   for (const a of avoidedToSeed) {
-    await upsertRecord(db, 'avoided_waste_log', a);
+    try {
+      await upsertRecord(db, 'avoided_waste_logs', a);
+      avoidedWasteRecordsSeeded++;
+    } catch (err) {
+      logger.debug({ error: err.message }, 'avoided_waste_logs table not available, skipping record');
+    }
   }
 
   // 10. Device Events (Door open, temperature alert, online)
@@ -426,17 +421,15 @@ export async function seedDemo(client = null) {
       device_id: demoDevice.id,
       household_id: demoHousehold.id,
       event_type: 'device_online',
-      severity: 'info',
-      message: 'Main Refrigerator Hub connected and telemetry active',
+      description: 'Main Refrigerator Hub connected and telemetry active',
       created_at: daysAgo(7)
     },
     {
       id: 'd0000000-0000-4000-a000-000000000062',
       device_id: demoDevice.id,
       household_id: demoHousehold.id,
-      event_type: 'door_opened',
-      severity: 'warning',
-      message: 'Refrigerator door was left ajar for 4 minutes',
+      event_type: 'door_open',
+      description: 'Refrigerator door was left ajar for 4 minutes',
       metadata: { duration_seconds: 240 },
       created_at: daysAgo(2)
     },
@@ -445,8 +438,7 @@ export async function seedDemo(client = null) {
       device_id: demoDevice.id,
       household_id: demoHousehold.id,
       event_type: 'door_closed',
-      severity: 'info',
-      message: 'Refrigerator door closed',
+      description: 'Refrigerator door closed',
       created_at: daysAgo(2)
     }
   ];
@@ -499,7 +491,7 @@ export async function seedDemo(client = null) {
     {
       id: 'd0000000-0000-4000-a000-000000000082',
       household_id: demoHousehold.id,
-      type: 'risk_transition',
+      type: 'inventory',
       title: 'Critical Expiry Risk: Leftover Vegetable Curry',
       message: 'Leftover Vegetable Curry has estimated 0.8 days remaining (Use-First score: 95).',
       severity: 'critical',
@@ -509,7 +501,7 @@ export async function seedDemo(client = null) {
     {
       id: 'd0000000-0000-4000-a000-000000000083',
       household_id: demoHousehold.id,
-      type: 'risk_transition',
+      type: 'inventory',
       title: 'Critical Expiry Risk: Organic Strawberries',
       message: 'Organic Strawberries has estimated 1.0 days remaining (Use-First score: 92).',
       severity: 'critical',
@@ -531,7 +523,7 @@ export async function seedDemo(client = null) {
     deviceEventsSeeded: eventsToSeed.length,
     notificationsSeeded: notificationsToSeed.length,
     wasteRecordsSeeded: wasteToSeed.length,
-    avoidedWasteRecordsSeeded: avoidedToSeed.length
+    avoidedWasteRecordsSeeded
   };
 
   logger.info(summary, 'SaveBite demo data successfully seeded (idempotent)!');

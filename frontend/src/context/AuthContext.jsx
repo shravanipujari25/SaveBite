@@ -28,6 +28,16 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     checkAuth()
+
+    const handleAuthExpired = () => {
+      setUser(null)
+      setAuthError('Your session has expired. Please log in again.')
+    }
+
+    window.addEventListener('savebite:auth_expired', handleAuthExpired)
+    return () => {
+      window.removeEventListener('savebite:auth_expired', handleAuthExpired)
+    }
   }, [checkAuth])
 
   const login = async (credentials) => {

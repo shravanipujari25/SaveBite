@@ -17,6 +17,12 @@ router.get(
   notificationController.getNotifications
 );
 
+// PATCH /api/v1/notifications/read-all - Mark all unread notifications as read
+router.patch(
+  '/read-all',
+  notificationController.markAllAsRead
+);
+
 // PATCH /api/v1/notifications/:id/read - Mark notification as read
 router.patch(
   '/:id/read',

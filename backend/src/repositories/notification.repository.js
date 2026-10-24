@@ -128,6 +128,34 @@ export class NotificationRepository {
   }
 
   /**
+   * Mark all unread notifications as read for a household.
+   *
+   * @param {string} householdId
+   * @param {object} [client]
+   * @returns {Promise<object[]>}
+   */
+  async markAllAsRead(householdId, client = null) {
+    const db = client || this.getClient();
+
+    const { data, error } = await db
+      .from('notifications')
+      .update({
+        is_read: true,
+        read_at: new Date().toISOString()
+      })
+      .eq('household_id', householdId)
+      .eq('is_read', false)
+      .select('*');
+
+    if (error) {
+      logger.error({ householdId, error: error.message }, 'Failed to mark all notifications as read');
+      throw error;
+    }
+
+    return data || [];
+  }
+
+  /**
    * Check for a recent notification on the same device and type within cooldown window.
    *
    * @param {string} householdId
@@ -141,13 +169,18 @@ export class NotificationRepository {
     const db = client || this.getClient();
     const thresholdTime = new Date(Date.now() - withinMinutes * 60 * 1000).toISOString();
 
-    const { data, error } = await db
+    let query = db
       .from('notifications')
-      .select('id, created_at')
+      .select('*')
       .eq('household_id', householdId)
-      .eq('device_id', deviceId)
       .eq('type', type)
-      .gte('created_at', thresholdTime)
+      .gte('created_at', thresholdTime);
+
+    if (deviceId !== null && deviceId !== undefined) {
+      query = query.eq('device_id', deviceId);
+    }
+
+    const { data, error } = await query
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();

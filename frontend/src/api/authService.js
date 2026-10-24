@@ -1,56 +1,48 @@
 /**
  * SaveBite Authentication Service
- * Communicates with the Node.js + Express + JWT backend.
+ * Communicates with the Node.js + Express + custom JWT backend.
  * When VITE_USE_MOCKS=true, provides explicit demo/mock authentication for local development.
  * Never silently falls back to mock authentication if real requests fail.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
+import { API_BASE_URL, TOKEN_STORAGE_KEY } from './httpClient'
+
 const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true'
-
-const TOKEN_KEY = 'savebite_jwt_token'
 const MOCK_USER_KEY = 'savebite_mock_auth_user'
-
-const delay = (ms = 250) => new Promise((resolve) => setTimeout(resolve, ms))
+const delay = (ms = 200) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export const authService = {
   isMockMode: USE_MOCKS,
 
   getToken() {
-    try {
-      return localStorage.getItem(TOKEN_KEY)
-    } catch {
-      return null
-    }
+    return localStorage.getItem(TOKEN_STORAGE_KEY)
   },
 
   setToken(token) {
-    try {
-      if (token) {
-        localStorage.setItem(TOKEN_KEY, token)
-      } else {
-        localStorage.removeItem(TOKEN_KEY)
-      }
-    } catch (e) {
-      console.warn('[authService] Failed to persist token:', e)
+    if (token) {
+      localStorage.setItem(TOKEN_STORAGE_KEY, token)
+    } else {
+      localStorage.removeItem(TOKEN_STORAGE_KEY)
     }
   },
 
   clearSession() {
+    this.setToken(null)
     try {
-      localStorage.removeItem(TOKEN_KEY)
       localStorage.removeItem(MOCK_USER_KEY)
+      localStorage.removeItem('savebite_auth_token')
     } catch (e) {
       console.warn('[authService] Failed to clear session:', e)
     }
   },
 
   /**
-   * Log in user
+   * Log in user using email and password
+   * Connects to POST /api/v1/auth/signin
    * @param {{ email: string, password: string }} credentials
    */
   async login({ email, password }) {
-    // 1. Mock Authentication Mode
+    // 1. Explicit Mock Authentication Mode
     if (USE_MOCKS) {
       await delay(200)
 
@@ -63,12 +55,11 @@ export const authService = {
         return { data: null, error: 'Please enter a valid email address', status: 400 }
       }
 
-      // Successful mock session
       const mockUser = {
         id: 'usr_demo_' + Date.now().toString(36),
         name: email.split('@')[0].replace('.', ' '),
         email: email.trim().toLowerCase(),
-        role: 'Household Admin',
+        role: 'user',
         householdSize: 2,
         isDemoAccount: true,
       }
@@ -90,12 +81,13 @@ export const authService = {
 
     // 2. Real Backend Node.js JWT Authentication Mode
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/auth/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        credentials: 'include', // Support HttpOnly cookies if configured
+        credentials: 'include',
         body: JSON.stringify({ email: email.trim(), password }),
       })
 
@@ -104,11 +96,13 @@ export const authService = {
       if (!response.ok) {
         let errorMessage = 'Invalid credentials or login failed'
         if (response.status === 401) {
-          errorMessage = result?.message || 'Invalid email or password. Please try again.'
+          errorMessage = result?.message || result?.error?.message || 'Invalid email or password. Please try again.'
         } else if (response.status === 429) {
           errorMessage = 'Too many failed login attempts. Please wait a moment.'
-        } else if (result?.message) {
-          errorMessage = result.message
+        } else if (result?.error?.details && Array.isArray(result.error.details)) {
+          errorMessage = result.error.details.map((d) => d.message).join('. ')
+        } else if (result?.message || result?.error?.message) {
+          errorMessage = result.message || result.error.message
         }
 
         return {
@@ -118,27 +112,33 @@ export const authService = {
         }
       }
 
-      // If backend returns bearer token in response body, store safely
-      const token = result?.token || result?.accessToken || result?.data?.token
+      // Backend returns: { status: 'success', data: { user, household, accessToken } }
+      const authData = result?.data || result
+      const token = authData?.accessToken || authData?.token
       if (token) {
         this.setToken(token)
       }
 
-      const user = result?.user || result?.data?.user || result?.data || {
+      const user = authData?.user || {
         email: email.trim(),
         name: email.split('@')[0],
       }
 
       return {
-        data: { user, token },
+        data: {
+          user: {
+            ...user,
+            household: authData?.household,
+          },
+          token,
+        },
         error: null,
         status: response.status,
       }
     } catch (err) {
-      // Network failure / Backend offline
       return {
         data: null,
-        error: `Cannot reach authentication server at ${API_BASE_URL}. Ensure the Node.js backend is running or enable mock mode (VITE_USE_MOCKS=true).`,
+        error: `Cannot reach backend at ${API_BASE_URL}. Ensure the SaveBite backend server is running on port 5000.`,
         status: 0,
       }
     }
@@ -146,10 +146,10 @@ export const authService = {
 
   /**
    * Register new household account
+   * Connects to POST /api/v1/auth/signup
    * @param {{ name: string, email: string, password: string, householdSize?: number }} userData
    */
   async signup({ name, email, password, householdSize = 2 }) {
-    // 1. Mock Authentication Mode
     if (USE_MOCKS) {
       await delay(250)
 
@@ -170,7 +170,7 @@ export const authService = {
         id: 'usr_new_' + Date.now().toString(36),
         name: name.trim(),
         email: email.trim().toLowerCase(),
-        role: 'Household Admin',
+        role: 'user',
         householdSize: Number(householdSize) || 2,
         isDemoAccount: true,
       }
@@ -190,19 +190,18 @@ export const authService = {
       }
     }
 
-    // 2. Real Backend Node.js JWT Mode
     try {
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         credentials: 'include',
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim(),
           password,
-          householdSize: Number(householdSize) || 2,
         }),
       })
 
@@ -211,9 +210,11 @@ export const authService = {
       if (!response.ok) {
         let errorMessage = 'Signup registration failed'
         if (response.status === 409) {
-          errorMessage = result?.message || 'An account with this email address already exists. Please sign in instead.'
-        } else if (result?.message) {
-          errorMessage = result.message
+          errorMessage = result?.message || result?.error?.message || 'An account with this email address already exists. Please sign in instead.'
+        } else if (result?.error?.details && Array.isArray(result.error.details)) {
+          errorMessage = result.error.details.map((d) => d.message).join('. ')
+        } else if (result?.message || result?.error?.message) {
+          errorMessage = result.message || result.error.message
         }
 
         return {
@@ -223,26 +224,33 @@ export const authService = {
         }
       }
 
-      const token = result?.token || result?.accessToken || result?.data?.token
+      // Backend returns: { status: 'success', data: { user, household, accessToken } }
+      const authData = result?.data || result
+      const token = authData?.accessToken || authData?.token
       if (token) {
         this.setToken(token)
       }
 
-      const user = result?.user || result?.data?.user || result?.data || {
+      const user = authData?.user || {
         name: name.trim(),
         email: email.trim(),
-        householdSize,
       }
 
       return {
-        data: { user, token },
+        data: {
+          user: {
+            ...user,
+            household: authData?.household,
+          },
+          token,
+        },
         error: null,
         status: response.status,
       }
     } catch (err) {
       return {
         data: null,
-        error: `Cannot reach authentication server at ${API_BASE_URL}. Ensure the Node.js backend is running or enable mock mode.`,
+        error: `Cannot reach backend at ${API_BASE_URL}. Ensure the SaveBite backend server is running on port 5000.`,
         status: 0,
       }
     }
@@ -250,6 +258,7 @@ export const authService = {
 
   /**
    * Fetch currently authenticated user session
+   * Connects to GET /api/v1/auth/me
    */
   async getCurrentUser() {
     if (USE_MOCKS) {
@@ -263,23 +272,27 @@ export const authService = {
         console.warn('Error reading mock user:', e)
       }
 
-      // Default mock admin user
-      const defaultUser = {
-        id: 'usr_demo_admin',
-        name: 'Sarah Miller',
-        email: 'sarah.miller@example.com',
-        role: 'Household Admin',
-        householdSize: 2,
-        isDemoAccount: true,
+      return {
+        data: {
+          id: 'usr_demo_admin',
+          name: 'Demo Chef',
+          email: 'demo@savebite.com',
+          role: 'user',
+          isDemoAccount: true,
+        },
+        error: null,
       }
-      return { data: defaultUser, error: null }
     }
 
-    // Real backend verification
     const token = this.getToken()
-    const headers = { 'Content-Type': 'application/json' }
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`
+    if (!token) {
+      return { data: null, error: null, status: 401 }
+    }
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${token}`,
     }
 
     try {
@@ -297,7 +310,7 @@ export const authService = {
       }
 
       const result = await response.json().catch(() => null)
-      const user = result?.user || result?.data || result
+      const user = result?.data?.user || result?.data || result?.user
       return { data: user, error: null, status: response.status }
     } catch (err) {
       return {
@@ -310,21 +323,24 @@ export const authService = {
 
   /**
    * Log out session
+   * Connects to POST /api/v1/auth/logout
    */
   async logout() {
     if (!USE_MOCKS) {
       const token = this.getToken()
-      const headers = { 'Content-Type': 'application/json' }
-      if (token) headers['Authorization'] = `Bearer ${token}`
-
-      try {
-        await fetch(`${API_BASE_URL}/auth/logout`, {
-          method: 'POST',
-          headers,
-          credentials: 'include',
-        })
-      } catch (e) {
-        console.warn('Logout request error:', e)
+      if (token) {
+        try {
+          await fetch(`${API_BASE_URL}/auth/logout`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            credentials: 'include',
+          })
+        } catch (e) {
+          console.warn('Logout request error:', e)
+        }
       }
     }
 

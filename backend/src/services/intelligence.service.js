@@ -31,7 +31,7 @@ export class IntelligenceService {
     const now = new Date();
     const expiry = new Date(expiryDate);
     const diffMs = expiry.getTime() - now.getTime();
-    return Number((diffMs / (1000 * 60 * 60 * 24)).toFixed(1));
+    return Math.round(diffMs / (1000 * 60 * 60 * 24));
   }
 
   /**
@@ -45,16 +45,16 @@ export class IntelligenceService {
   _determineFreshnessBucket(adjDaysLeft, useFirstScore, expiryDate) {
     if (adjDaysLeft !== null && adjDaysLeft !== undefined) {
       if (adjDaysLeft <= 0) return 'expired';
-      if (adjDaysLeft <= this.shelfLifeAlertDays || useFirstScore >= 80) return 'critical';
-      if (adjDaysLeft <= 4.0 || useFirstScore >= this.useFirstThreshold) return 'use_soon';
+      if (adjDaysLeft <= 1.0 || useFirstScore >= 80) return 'critical';
+      if (adjDaysLeft <= this.shelfLifeAlertDays || useFirstScore >= this.useFirstThreshold) return 'use_soon';
       return 'fresh';
     }
 
     if (expiryDate) {
       const days = this._calculateCalendarDaysRemaining(expiryDate);
       if (days !== null && days <= 0) return 'expired';
-      if (days !== null && days <= this.shelfLifeAlertDays) return 'critical';
-      if (days !== null && days <= 4.0) return 'use_soon';
+      if (days !== null && days <= 1.0) return 'critical';
+      if (days !== null && days <= this.shelfLifeAlertDays) return 'use_soon';
     }
 
     if (useFirstScore >= 80) return 'critical';
@@ -160,17 +160,18 @@ export class IntelligenceService {
         : (item.adj_days_left !== null && item.adj_days_left !== undefined ? Number(item.adj_days_left) : null);
 
       const useFirstScore = scoreData?.use_first_score !== undefined
-        ? Number(scoreData.use_first_score)
-        : (item.use_first_score ? Number(item.use_first_score) : 0);
+        ? Math.round(Number(scoreData.use_first_score))
+        : (item.use_first_score ? Math.round(Number(item.use_first_score)) : 0);
 
-      const newBucket = this._determineFreshnessBucket(adjDaysLeft, useFirstScore, item.expiry_date);
+      const newBucket = scoreData?.freshness_bucket || this._determineFreshnessBucket(adjDaysLeft, useFirstScore, item.expiry_date);
       const previousBucket = item.freshness_bucket || 'fresh';
 
       // Update database intelligence fields
       await this.inventoryRepo.updateIntelligence(item.id, householdId, {
         adj_days_left: adjDaysLeft,
         use_first_score: useFirstScore,
-        freshness_bucket: newBucket
+        freshness_bucket: newBucket,
+        last_intelligence_at: new Date().toISOString()
       });
       itemsProcessed++;
 
@@ -191,7 +192,7 @@ export class IntelligenceService {
         const isDuplicate = recentAlert && recentAlert.title && recentAlert.title.includes(item.name);
 
         if (!isDuplicate) {
-          const isCritical = newBucket === 'critical';
+          const isCritical = useFirstScore >= 80 || (adjDaysLeft !== null && adjDaysLeft <= this.shelfLifeAlertDays);
           const title = isCritical
             ? `Critical Expiry Risk: ${item.name}`
             : `Use Soon Notice: ${item.name}`;

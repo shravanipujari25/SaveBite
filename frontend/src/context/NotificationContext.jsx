@@ -1,13 +1,22 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { api } from '../api/client'
+import { useAuth } from './AuthContext'
 
 const NotificationContext = createContext(null)
 
 export function NotificationProvider({ children }) {
+  const { isAuthenticated, loading: authLoading } = useAuth()
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
 
   const fetchAlerts = useCallback(async () => {
+    // Prevent unauthenticated calls during login/logout or initial bootstrap
+    if (!isAuthenticated) {
+      setNotifications([])
+      setLoading(false)
+      return
+    }
+
     try {
       const { data } = await api.storage.getAlerts()
       if (data) setNotifications(data)
@@ -16,24 +25,32 @@ export function NotificationProvider({ children }) {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [isAuthenticated])
 
   useEffect(() => {
-    fetchAlerts()
-  }, [fetchAlerts])
+    if (!authLoading) {
+      fetchAlerts()
+    }
+  }, [fetchAlerts, authLoading, isAuthenticated])
 
   const markAsRead = async (id) => {
-    await api.storage.markAlertRead(id)
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
-    )
+    try {
+      await api.storage.markAlertRead(id)
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+      )
+    } catch (err) {
+      console.error('[NotificationContext] Failed to mark alert read:', err)
+    }
   }
 
   const markAllAsRead = async () => {
-    for (const n of notifications) {
-      if (!n.isRead) await api.storage.markAlertRead(n.id)
+    try {
+      await api.storage.markAllAlertsRead()
+      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
+    } catch (err) {
+      console.error('[NotificationContext] Failed to mark all alerts read:', err)
     }
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
   }
 
   const unreadCount = notifications.filter((n) => !n.isRead).length
