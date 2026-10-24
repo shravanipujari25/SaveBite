@@ -1,6 +1,8 @@
 import app from './app.js';
 import env from './config/env.js';
 import { logger } from './config/logger.js';
+import { mqttSubscriberService } from './services/mqttSubscriber.service.js';
+import { schedulerService } from './services/scheduler.service.js';
 
 const PORT = env.PORT || 5000;
 
@@ -9,15 +11,36 @@ const server = app.listen(PORT, () => {
     {
       port: PORT,
       nodeEnv: env.NODE_ENV,
-      frontendUrl: env.FRONTEND_URL
+      frontendUrl: env.FRONTEND_URL,
+      mqttEnabled: env.MQTT_ENABLED,
+      schedulerEnabled: env.SCHEDULER_ENABLED
     },
     'SaveBite Backend Server initialized successfully'
   );
+
+  // Initialize optional MQTT subscriber
+  mqttSubscriberService.start();
+
+  // Initialize scheduled intelligence runner
+  schedulerService.start();
 });
 
 // Graceful shutdown management
-const gracefulShutdown = (signal) => {
-  logger.info({ signal }, 'Termination signal received. Closing HTTP server gracefully...');
+const gracefulShutdown = async (signal) => {
+  logger.info({ signal }, 'Termination signal received. Closing server gracefully...');
+
+  try {
+    schedulerService.stop();
+  } catch (schedErr) {
+    logger.warn({ schedErr: schedErr.message }, 'Error stopping scheduler');
+  }
+
+  try {
+    await mqttSubscriberService.stop();
+  } catch (mqttErr) {
+    logger.warn({ mqttErr: mqttErr.message }, 'Error stopping MQTT subscriber');
+  }
+
   server.close(() => {
     logger.info('HTTP server closed. Exiting process.');
     process.exit(0);

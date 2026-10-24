@@ -1,0 +1,15 @@
+# ==============================================================================
+# SaveBite Local Development MQTT Broker (Eclipse Mosquitto)
+# Usage:
+#   docker compose -f docker-compose.mqtt.yml up -d
+#   docker compose -f docker-compose.mqtt.yml down
+# ==============================================================================
+
+services:
+  mqtt-broker:
+    image: eclipse-mosquitto:2.0
+    container_name: savebite-mqtt-broker
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    command: mosquitto -c /mosquitto-no-auth.conf

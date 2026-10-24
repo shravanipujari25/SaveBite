@@ -69,6 +69,50 @@ const envSchema = z.object({
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),
 
   AUTH_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(30),
+
+  AI_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(60),
+
+  TELEMETRY_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
+
+  UPLOAD_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(40),
+
+  // MQTT Broker Configuration (Optional in development)
+  MQTT_ENABLED: z.preprocess(
+    (val) => val === 'true' || val === true || val === '1',
+    z.boolean()
+  ).default(false),
+
+  MQTT_BROKER_URL: z.string().default('mqtt://localhost:1883'),
+
+  MQTT_USERNAME: z.string().optional(),
+
+  MQTT_PASSWORD: z.string().optional(),
+
+  MQTT_CLIENT_ID: z.string().default('savebite-backend-subscriber'),
+
+  MQTT_TELEMETRY_TOPIC: z.string().default('savebite/+/+/telemetry'),
+
+  // Configurable Operational Sensor Thresholds (Non-AI preliminary notifications)
+  TEMP_HIGH_ALERT_C: z.coerce.number().default(10.0),
+  TEMP_LOW_ALERT_C: z.coerce.number().default(-2.0),
+  AIR_QUALITY_ALERT_RAW: z.coerce.number().default(400.0),
+
+  // Phase 3: AI Service, Receipts Storage & Barcode Configuration
+  AI_SERVICE_URL: z.string().url().default('http://localhost:8000'),
+  SUPABASE_RECEIPTS_BUCKET: z.string().default('receipts'),
+  RECEIPT_MAX_FILE_SIZE_MB: z.coerce.number().int().positive().default(10),
+  RECEIPT_AUTO_CREATE_CONFIDENCE: z.coerce.number().min(0).max(1).default(0.85),
+  AI_REQUEST_TIMEOUT_MS: z.coerce.number().int().positive().default(15000),
+  OPEN_FOOD_FACTS_TIMEOUT_MS: z.coerce.number().int().positive().default(10000),
+
+  // Phase 4: Scheduler & Intelligence Configuration
+  SCHEDULER_ENABLED: z.preprocess(
+    (val) => val === 'true' || val === true || val === '1',
+    z.boolean()
+  ).default(isTest ? false : true),
+  SCHEDULER_INTERVAL_MINUTES: z.coerce.number().int().positive().default(15),
+  USE_FIRST_ALERT_THRESHOLD: z.coerce.number().min(0).max(100).default(70),
+  SHELF_LIFE_ALERT_THRESHOLD_DAYS: z.coerce.number().min(0).default(2.0)
 });
 
 const parseEnv = () => {

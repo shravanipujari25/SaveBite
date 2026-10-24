@@ -11,14 +11,34 @@ import { ZodError } from 'zod';
 export const validate = (schemas = {}) => {
   return async (req, res, next) => {
     try {
-      if (schemas.body && req.body) {
-        req.body = await schemas.body.parseAsync(req.body);
+      if (schemas.body) {
+        req.body = await schemas.body.parseAsync(req.body || {});
       }
-      if (schemas.query && req.query) {
-        req.query = await schemas.query.parseAsync(req.query);
+      if (schemas.query) {
+        const parsedQuery = await schemas.query.parseAsync(req.query || {});
+        try {
+          req.query = parsedQuery;
+        } catch {
+          Object.defineProperty(req, 'query', {
+            value: parsedQuery,
+            writable: true,
+            configurable: true,
+            enumerable: true
+          });
+        }
       }
-      if (schemas.params && req.params) {
-        req.params = await schemas.params.parseAsync(req.params);
+      if (schemas.params) {
+        const parsedParams = await schemas.params.parseAsync(req.params || {});
+        try {
+          req.params = parsedParams;
+        } catch {
+          Object.defineProperty(req, 'params', {
+            value: parsedParams,
+            writable: true,
+            configurable: true,
+            enumerable: true
+          });
+        }
       }
       return next();
     } catch (err) {

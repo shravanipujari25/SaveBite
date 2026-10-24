@@ -41,6 +41,43 @@ export const authLimiter = rateLimit({
 });
 
 /**
+ * Rate limiter for computationally expensive AI-backed operations
+ * (e.g. recipe rescue, assistant chat, freshness vision analysis).
+ */
+export const aiLimiter = rateLimit({
+  windowMs: env.RATE_LIMIT_WINDOW_MS,
+  max: env.AI_RATE_LIMIT_MAX || 60,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+  skip: () => env.NODE_ENV === 'test'
+});
+
+/**
+ * High-throughput rate limiter for IoT telemetry ingestion.
+ */
+export const telemetryLimiter = rateLimit({
+  windowMs: env.RATE_LIMIT_WINDOW_MS,
+  max: env.TELEMETRY_RATE_LIMIT_MAX || 300,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+  skip: () => env.NODE_ENV === 'test'
+});
+
+/**
+ * Rate limiter for multipart file uploads (receipt scans, camera uploads).
+ */
+export const uploadLimiter = rateLimit({
+  windowMs: env.RATE_LIMIT_WINDOW_MS,
+  max: env.UPLOAD_RATE_LIMIT_MAX || 40,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+  skip: () => env.NODE_ENV === 'test'
+});
+
+/**
  * Configurable rate limiter factory for testing or custom endpoints
  */
 export const createLimiter = (options = {}) => {
@@ -57,5 +94,8 @@ export const createLimiter = (options = {}) => {
 export default {
   globalLimiter,
   authLimiter,
+  aiLimiter,
+  telemetryLimiter,
+  uploadLimiter,
   createLimiter
 };

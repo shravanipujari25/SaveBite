@@ -43,7 +43,7 @@ export class UserRepository {
 
     const { data, error } = await db
       .from('users')
-      .select('id, name, email, password_hash, role, token_version, created_at, updated_at')
+      .select('id, name, email, password_hash, role, token_version, avatar_url, preferences, created_at, updated_at')
       .eq('id', id)
       .maybeSingle();
 
@@ -149,6 +149,39 @@ export class UserRepository {
 
     if (error) {
       logger.error({ id, role, error: error.message }, 'Failed to update user role');
+      throw error;
+    }
+
+    return data;
+  }
+
+  /**
+   * Update profile fields for a user.
+   *
+   * @param {string} id
+   * @param {object} updates - Safe profile updates (e.g. name, avatar_url, preferences)
+   * @param {object} [client]
+   * @returns {Promise<object>}
+   */
+  async updateProfile(id, { name, avatar_url, preferences }, client = null) {
+    const db = client || this.getClient();
+
+    const updatePayload = {
+      updated_at: new Date().toISOString()
+    };
+    if (name !== undefined) updatePayload.name = name.trim();
+    if (avatar_url !== undefined) updatePayload.avatar_url = avatar_url;
+    if (preferences !== undefined) updatePayload.preferences = preferences;
+
+    const { data, error } = await db
+      .from('users')
+      .update(updatePayload)
+      .eq('id', id)
+      .select('id, name, email, role, avatar_url, preferences, created_at, updated_at')
+      .single();
+
+    if (error) {
+      logger.error({ id, error: error.message }, 'Failed to update user profile');
       throw error;
     }
 

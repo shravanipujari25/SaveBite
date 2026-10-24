@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { userRepository } from '../repositories/user.repository.js';
+import { householdRepository } from '../repositories/household.repository.js';
 import { generateAccessToken } from '../utils/token.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { logger } from '../config/logger.js';
@@ -10,18 +11,20 @@ const BCRYPT_SALT_ROUNDS = 12;
 const DUMMY_HASH = '$2a$12$7EqJtq98hPqEX7fNZaFWoOhiM.x8q7oY5.2yq1E92P1k9nO7eB4u2';
 
 export class AuthService {
-  constructor(repository = userRepository) {
-    this.userRepo = repository;
+  constructor(userRepo = userRepository, householdRepo = householdRepository) {
+    this.userRepo = userRepo;
+    this.householdRepo = householdRepo;
   }
 
   /**
-   * Register a new user with normalized email, strong hashed password, and issue JWT.
+   * Register a new user, automatically provision default household and owner membership,
+   * and issue JWT.
    *
    * @param {object} params
    * @param {string} params.name
    * @param {string} params.email
    * @param {string} params.password
-   * @returns {Promise<{ user: object, accessToken: string }>}
+   * @returns {Promise<{ user: object, household: object, accessToken: string }>}
    */
   async signup({ name, email, password }) {
     const normalizedEmail = email.trim().toLowerCase();
@@ -36,17 +39,21 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
 
     let newUser;
+    let newHousehold;
     try {
       // Force default role to 'user' for public signups (prevent privilege escalation)
-      newUser = await this.userRepo.create({
+      // Atomically creates user + household + owner membership
+      const created = await this.householdRepo.createWithHousehold({
         name: name.trim(),
         email: normalizedEmail,
         password_hash: passwordHash,
         role: 'user'
       });
+      newUser = created.user;
+      newHousehold = created.household;
     } catch (err) {
       // Handle PostgreSQL unique constraint race condition
-      if (err.code === '23505' || err.message?.includes('duplicate key') || err.message?.includes('unique constraint')) {
+      if (err.code === '23505' || err.message?.includes('duplicate key') || err.message?.includes('already registered')) {
         throw new AppError('Email is already registered', 409, 'EMAIL_EXISTS');
       }
       throw err;
@@ -55,7 +62,7 @@ export class AuthService {
     // Generate custom JWT access token
     const accessToken = generateAccessToken(newUser);
 
-    logger.info({ userId: newUser.id }, 'New user successfully registered');
+    logger.info({ userId: newUser.id, householdId: newHousehold.id }, 'New user and household successfully registered');
 
     // Return safe user representation - NEVER return password_hash
     return {
@@ -66,6 +73,11 @@ export class AuthService {
         role: newUser.role,
         createdAt: newUser.created_at,
         updatedAt: newUser.updated_at
+      },
+      household: {
+        id: newHousehold.id,
+        name: newHousehold.name,
+        role: newHousehold.role || 'owner'
       },
       accessToken
     };
@@ -95,6 +107,9 @@ export class AuthService {
       throw new AppError('Invalid email or password', 401, 'INVALID_CREDENTIALS');
     }
 
+    // Retrieve active household membership
+    const membership = await this.householdRepo.findActiveMembershipByUserId(user.id);
+
     // Generate custom JWT access token with user's current token version
     const accessToken = generateAccessToken(user);
 
@@ -109,12 +124,19 @@ export class AuthService {
         createdAt: user.created_at,
         updatedAt: user.updated_at
       },
+      ...(membership ? {
+        household: {
+          id: membership.household_id,
+          name: membership.household?.name || 'My Household',
+          role: membership.role
+        }
+      } : {}),
       accessToken
     };
   }
 
   /**
-   * Retrieve current authenticated user profile by user UUID.
+   * Retrieve current authenticated user profile and active household by user UUID.
    *
    * @param {string} userId
    * @returns {Promise<object>} Safe user profile
@@ -126,13 +148,20 @@ export class AuthService {
       throw new AppError('User not found', 404, 'NOT_FOUND');
     }
 
+    const membership = await this.householdRepo.findActiveMembershipByUserId(userId);
+
     return {
       id: user.id,
       name: user.name,
       email: user.email,
       role: user.role,
       createdAt: user.created_at,
-      updatedAt: user.updated_at
+      updatedAt: user.updated_at,
+      household: membership ? {
+        id: membership.household_id,
+        name: membership.household?.name || 'My Household',
+        role: membership.role
+      } : null
     };
   }
 
