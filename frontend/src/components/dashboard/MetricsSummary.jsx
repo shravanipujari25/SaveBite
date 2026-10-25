@@ -18,14 +18,12 @@ export function MetricsSummary({ summary, loading }) {
     {
       title: 'Total Items',
       value: summary.totalItems,
-      subtitle: `${summary.lowStockCount || 0} low stock items`,
       icon: ShoppingBag,
       color: 'bg-emerald-50 text-emerald-800',
     },
     {
       title: 'Expiring Soon',
       value: summary.expiringSoonCount,
-      subtitle: 'Need attention <= 48h',
       icon: AlertTriangle,
       color: summary.expiringSoonCount > 0 ? 'bg-amber-50 text-amber-700' : 'bg-slate-50 text-slate-700',
       badge: summary.expiringSoonCount > 0 ? 'Urgent' : null,
@@ -33,14 +31,12 @@ export function MetricsSummary({ summary, loading }) {
     {
       title: 'Pantry Value (INR)',
       value: formatCurrency(summary.estimatedPantryValue),
-      subtitle: `₹${summary.monthlySavingsINR || 1850} saved this month`,
       icon: IndianRupee,
       color: 'bg-emerald-50 text-emerald-800',
     },
     {
       title: 'Waste Reduction',
       value: `${summary.wasteReductionRate || 84}%`,
-      subtitle: `${summary.carbonFootprintPreventedKg || 14.6}kg CO₂ diverted`,
       icon: Leaf,
       color: 'bg-teal-50 text-teal-800',
     },
@@ -70,7 +66,6 @@ export function MetricsSummary({ summary, loading }) {
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1 truncate">{c.subtitle}</p>
           </Card>
         )
       })}

@@ -110,9 +110,30 @@ export class ReceiptRepository {
     if (!items || items.length === 0) return [];
     const db = client || this.getClient();
 
+    // Map items to match actual database columns
+    const dbRows = items.map((item) => ({
+      id: item.id,
+      receipt_id: item.receipt_id,
+      household_id: item.household_id,
+      original_name: item.original_name || item.raw_name,
+      normalized_name: item.normalized_name,
+      category: item.category,
+      quantity: item.quantity,
+      unit: item.unit,
+      unit_price: item.unit_price,
+      line_total: item.line_total ?? item.total_price ?? null,
+      currency: item.currency || 'INR',
+      purchase_date: item.purchase_date || null,
+      expiry_date: item.expiry_date || null,
+      parse_confidence: item.parse_confidence,
+      normalization_confidence: item.normalization_confidence ?? item.normalize_confidence ?? item.confidence ?? null,
+      status: item.status === 'auto_created' ? 'created' : item.status,
+      inventory_item_id: item.inventory_item_id || null
+    }));
+
     const { data, error } = await db
       .from('receipt_items')
-      .insert(items)
+      .insert(dbRows)
       .select('*');
 
     if (error) {
@@ -120,7 +141,16 @@ export class ReceiptRepository {
       throw error;
     }
 
-    return data || [];
+    return (data || []).map((row) => ({
+      ...row,
+      raw_name: row.original_name || row.raw_name,
+      original_name: row.original_name || row.raw_name,
+      total_price: row.line_total ?? row.total_price,
+      line_total: row.line_total ?? row.total_price,
+      confidence: row.normalization_confidence ?? row.confidence ?? row.parse_confidence ?? 1.0,
+      normalize_confidence: row.normalization_confidence ?? row.normalize_confidence,
+      normalization_confidence: row.normalization_confidence ?? row.normalize_confidence
+    }));
   }
 
   /**
@@ -146,7 +176,16 @@ export class ReceiptRepository {
       throw error;
     }
 
-    return data || [];
+    return (data || []).map((row) => ({
+      ...row,
+      raw_name: row.original_name || row.raw_name,
+      original_name: row.original_name || row.raw_name,
+      total_price: row.line_total ?? row.total_price,
+      line_total: row.line_total ?? row.total_price,
+      confidence: row.normalization_confidence ?? row.confidence ?? row.parse_confidence ?? 1.0,
+      normalize_confidence: row.normalization_confidence ?? row.normalize_confidence,
+      normalization_confidence: row.normalization_confidence ?? row.normalize_confidence
+    }));
   }
 
   /**
@@ -174,7 +213,18 @@ export class ReceiptRepository {
       throw error;
     }
 
-    return data;
+    if (!data) return null;
+
+    return {
+      ...data,
+      raw_name: data.original_name || data.raw_name,
+      original_name: data.original_name || data.raw_name,
+      total_price: data.line_total ?? data.total_price,
+      line_total: data.line_total ?? data.total_price,
+      confidence: data.normalization_confidence ?? data.confidence ?? data.parse_confidence ?? 1.0,
+      normalize_confidence: data.normalization_confidence ?? data.normalize_confidence,
+      normalization_confidence: data.normalization_confidence ?? data.normalize_confidence
+    };
   }
 
   /**

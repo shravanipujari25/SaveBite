@@ -579,7 +579,7 @@ export const inventoryService = {
    */
   async scanFreshness(itemId, imageFile) {
     const formData = new FormData()
-    formData.append('image', imageFile)
+    formData.append('file', imageFile)
     return request(`/inventory/${itemId}/freshness-scan`, {
       method: 'POST',
       body: formData,

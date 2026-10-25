@@ -699,7 +699,7 @@ export const api = {
   receipts: {
     async upload(file) {
       const formData = new FormData()
-      formData.append('receipt', file)
+      formData.append('file', file)
       return request('/receipts/upload', {
         method: 'POST',
         body: formData,

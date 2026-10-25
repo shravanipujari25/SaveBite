@@ -16,7 +16,6 @@ const routeTitles = {
   '/shopping-list': 'Smart Shopping List',
   '/analytics': 'Food Waste Insights',
   '/assistant': 'SaveBite Help Assistant',
-  '/profile': 'Household Profile',
   '/settings': 'System Settings',
 }
 

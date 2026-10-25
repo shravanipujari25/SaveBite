@@ -21,7 +21,6 @@ import RecipesPage from './pages/RecipesPage'
 import ShoppingListPage from './pages/ShoppingListPage'
 import AnalyticsPage from './pages/AnalyticsPage'
 import AssistantPage from './pages/AssistantPage'
-import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
@@ -56,7 +55,6 @@ export function App() {
                   <Route path="/shopping-list" element={<ShoppingListPage />} />
                   <Route path="/analytics" element={<AnalyticsPage />} />
                   <Route path="/assistant" element={<AssistantPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                 </Route>
               </Route>

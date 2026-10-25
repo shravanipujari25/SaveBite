@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import Input from '../components/common/Input'
 import Button from '../components/common/Button'
-import { Mail, Lock, ArrowRight, Sparkles, Eye, EyeOff, AlertCircle, ShieldAlert } from 'lucide-react'
+import { Mail, Lock, ArrowRight, Sparkles, Eye, EyeOff, AlertCircle } from 'lucide-react'
 
 export function LoginPage() {
   const navigate = useNavigate()
@@ -76,24 +76,14 @@ export function LoginPage() {
         </p>
       </div>
 
-      {/* Mode Indicator Banner */}
-      {isMockMode ? (
+      {/* Mode Indicator Banner (only in mock mode) */}
+      {isMockMode && (
         <div className="p-3 bg-emerald-50 border border-emerald-200/90 rounded-2xl flex items-start gap-2.5 text-xs text-emerald-900">
           <Sparkles className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
           <div>
             <span className="font-bold block">Demo / Mock Auth Mode Active</span>
             <span className="text-[11px] text-emerald-700 leading-normal">
               Authentication is simulated locally via <code>VITE_USE_MOCKS=true</code>. Click below to autofill demo credentials.
-            </span>
-          </div>
-        </div>
-      ) : (
-        <div className="p-3 bg-slate-100 border border-slate-200 rounded-2xl flex items-start gap-2.5 text-xs text-slate-700">
-          <ShieldAlert className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
-          <div>
-            <span className="font-bold block">Node.js JWT Backend Mode</span>
-            <span className="text-[11px] text-slate-500 leading-normal">
-              Connecting directly to backend API. Failed requests will not fall back to mock data.
             </span>
           </div>
         </div>

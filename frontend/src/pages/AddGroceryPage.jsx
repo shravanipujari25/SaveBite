@@ -215,7 +215,28 @@ export function AddGroceryPage() {
   // Handle Receipt Upload
   const handleReceiptUpload = async (e) => {
     e.preventDefault()
-    if (!receiptFile) return
+    if (!receiptFile) {
+      setReceiptError('Please select a receipt file to upload.')
+      return
+    }
+
+    // Client-side file validation
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
+    if (receiptFile.type && !allowedTypes.includes(receiptFile.type)) {
+      setReceiptError('Unsupported file format. Please upload a JPG, PNG, WebP, or PDF file.')
+      return
+    }
+
+    const maxBytes = 10 * 1024 * 1024 // 10MB
+    if (receiptFile.size > maxBytes) {
+      setReceiptError('File size exceeds the 10MB maximum limit. Please upload a smaller file.')
+      return
+    }
+
+    if (receiptFile.size === 0) {
+      setReceiptError('The selected file is empty. Please select a valid receipt file.')
+      return
+    }
 
     setReceiptUploading(true)
     setReceiptError('')
@@ -707,7 +728,11 @@ export function AddGroceryPage() {
                 type="file"
                 id="receiptFileInput"
                 accept="image/jpeg,image/png,image/webp,application/pdf"
-                onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null
+                  setReceiptFile(file)
+                  if (file) setReceiptError('')
+                }}
                 className="hidden"
               />
               <label htmlFor="receiptFileInput" className="cursor-pointer space-y-2 block">

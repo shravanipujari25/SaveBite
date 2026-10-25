@@ -81,9 +81,6 @@ export function StoragePage() {
                 </span>
                 <span className="text-[10px] text-slate-400 font-mono">5s Tick</span>
               </div>
-              <p className="text-xs text-slate-300">
-                Switch environmental states to test live dashboard reactions, boundary alerts, and trend charts.
-              </p>
             </div>
           </div>
 

@@ -73,16 +73,27 @@ export class ReceiptService {
       );
     }
 
-    const receipt = await this.receiptRepo.createReceipt({
-      id: receiptId,
-      household_id: householdId,
-      uploaded_by: userId,
-      storage_path: storagePath,
-      file_name: file.originalname || `receipt.${ext}`,
-      mime_type: file.detectedMime,
-      file_size_bytes: file.size,
-      status: 'uploaded'
-    });
+    let receipt;
+    try {
+      receipt = await this.receiptRepo.createReceipt({
+        id: receiptId,
+        household_id: householdId,
+        uploaded_by: userId,
+        storage_path: storagePath,
+        file_name: file.originalname || `receipt.${ext}`,
+        mime_type: file.detectedMime,
+        file_size_bytes: file.size,
+        status: 'uploaded'
+      });
+    } catch (dbErr) {
+      logger.error({ receiptId, error: dbErr.message }, 'Failed to insert receipt record; rolling back uploaded file from storage');
+      try {
+        await db.storage.from(env.SUPABASE_RECEIPTS_BUCKET).remove([storagePath]);
+      } catch (cleanupErr) {
+        logger.warn({ receiptId, storagePath, error: cleanupErr.message }, 'Failed to remove storage file during database error rollback');
+      }
+      throw dbErr;
+    }
 
     logger.info({ receiptId, householdId }, 'Receipt registered successfully');
     return receipt;
@@ -114,8 +125,8 @@ export class ReceiptService {
       };
     }
 
-    // Update status to parsing
-    await this.receiptRepo.updateStatus(receiptId, householdId, 'parsing');
+    // Update status to processing (PostgreSQL receipts_status_check constraint allows 'processing')
+    await this.receiptRepo.updateStatus(receiptId, householdId, 'processing');
 
     const db = this.getDb();
     let signedUrl = null;
@@ -209,7 +220,7 @@ export class ReceiptService {
             estimated_unit_price: unitPrice,
             purchase_date: parsedResult.purchase_date || null
           });
-          lineStatus = 'auto_created';
+          lineStatus = 'created';
           inventoryItemId = invItem.id;
         } catch (invErr) {
           logger.error({ rawName, error: invErr.message }, 'Failed to auto-create inventory item for high-confidence line');
@@ -246,7 +257,7 @@ export class ReceiptService {
     // Mark receipt as parsed
     await this.receiptRepo.updateStatus(receiptId, householdId, 'parsed');
 
-    const autoCreatedCount = insertedItems.filter((i) => i.status === 'auto_created').length;
+    const autoCreatedCount = insertedItems.filter((i) => i.status === 'created' || i.status === 'auto_created').length;
     const pendingCount = insertedItems.filter((i) => i.status === 'pending').length;
 
     logger.info(
@@ -295,7 +306,7 @@ export class ReceiptService {
       throw new AppError('Receipt line item not found', 404, 'LINE_ITEM_NOT_FOUND');
     }
 
-    if (item.status === 'confirmed' || item.status === 'auto_created') {
+    if (item.status === 'confirmed' || item.status === 'created' || item.status === 'auto_created') {
       throw new AppError(
         'Receipt line item has already been confirmed and created in inventory',
         409,
@@ -355,7 +366,7 @@ export class ReceiptService {
       throw new AppError('Receipt line item not found', 404, 'LINE_ITEM_NOT_FOUND');
     }
 
-    if (item.status === 'auto_created' || item.status === 'confirmed') {
+    if (item.status === 'auto_created' || item.status === 'created' || item.status === 'confirmed') {
       throw new AppError(
         'Cannot reject an item that has already been created in inventory',
         409,

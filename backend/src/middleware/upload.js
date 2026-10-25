@@ -54,14 +54,16 @@ const ALLOWED_CAMERA_MIMES = [
 ];
 
 /**
- * Creates a file upload middleware handler for a specific field name and allowed types.
+ * Creates a file upload middleware handler for a specific field name or list of field names and allowed types.
  *
- * @param {string} fieldName - Form field name (e.g. 'file')
+ * @param {string|string[]} fieldNames - Form field name(s) (e.g. 'file' or ['file', 'receipt'])
  * @param {string[]} allowedMimes - Allowed MIME types
  * @returns {Function} Express middleware
  */
-export const createUploadMiddleware = (fieldName = 'file', allowedMimes = ALLOWED_RECEIPT_MIMES) => {
+export const createUploadMiddleware = (fieldNames = 'file', allowedMimes = ALLOWED_RECEIPT_MIMES) => {
   const maxBytes = env.RECEIPT_MAX_FILE_SIZE_MB * 1024 * 1024;
+  const names = Array.isArray(fieldNames) ? fieldNames : [fieldNames];
+  const primaryField = names[0];
 
   const storage = multer.memoryStorage();
   const upload = multer({
@@ -70,7 +72,7 @@ export const createUploadMiddleware = (fieldName = 'file', allowedMimes = ALLOWE
       fileSize: maxBytes,
       files: 1
     }
-  }).single(fieldName);
+  }).fields(names.map((name) => ({ name, maxCount: 1 })));
 
   return (req, res, next) => {
     upload(req, res, (err) => {
@@ -84,6 +86,16 @@ export const createUploadMiddleware = (fieldName = 'file', allowedMimes = ALLOWE
             )
           );
         }
+        if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+          const expected = names.length > 1 ? `'${names.join("' or '")}'` : `'${primaryField}'`;
+          return next(
+            new AppError(
+              `Unexpected form-data field '${err.field}'. Expected ${expected}.`,
+              400,
+              'INVALID_FIELD_NAME'
+            )
+          );
+        }
         return next(
           new AppError(
             err.message || 'Error processing uploaded file',
@@ -93,13 +105,37 @@ export const createUploadMiddleware = (fieldName = 'file', allowedMimes = ALLOWE
         );
       }
 
+      // Check for file across acceptable field names
+      let file = null;
+      if (req.files) {
+        for (const name of names) {
+          if (req.files[name] && req.files[name][0]) {
+            file = req.files[name][0];
+            break;
+          }
+        }
+      }
+      req.file = file;
+
       // Check if file was provided
       if (!req.file) {
+        const expected = names.length > 1 ? `'${names.join("' or '")}'` : `'${primaryField}'`;
         return next(
           new AppError(
-            `No file uploaded under form-data field '${fieldName}'. Please attach a valid file.`,
+            `No file uploaded under form-data field ${expected}. Please attach a valid file.`,
             400,
             'FILE_MISSING'
+          )
+        );
+      }
+
+      // Check if file is empty
+      if (!req.file.buffer || req.file.buffer.length === 0 || req.file.size === 0) {
+        return next(
+          new AppError(
+            'Uploaded file is empty. Please attach a valid receipt file.',
+            400,
+            'EMPTY_FILE'
           )
         );
       }
@@ -124,8 +160,8 @@ export const createUploadMiddleware = (fieldName = 'file', allowedMimes = ALLOWE
   };
 };
 
-export const uploadReceiptFile = createUploadMiddleware('file', ALLOWED_RECEIPT_MIMES);
-export const uploadFreshnessImage = createUploadMiddleware('file', ALLOWED_CAMERA_MIMES);
+export const uploadReceiptFile = createUploadMiddleware(['file', 'receipt'], ALLOWED_RECEIPT_MIMES);
+export const uploadFreshnessImage = createUploadMiddleware(['file', 'image'], ALLOWED_CAMERA_MIMES);
 
 export default {
   detectMimeTypeFromMagicBytes,

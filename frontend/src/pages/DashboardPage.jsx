@@ -11,7 +11,7 @@ import StorageCard from '../components/storage/StorageCard'
 import ItemDetailsModal from '../components/pantry/ItemDetailsModal'
 import ItemActionModal from '../components/pantry/ItemActionModal'
 import Button from '../components/common/Button'
-import { Plus, Refrigerator, ChefHat, ArrowUpRight, Sparkles, CheckCircle } from 'lucide-react'
+import { Plus, Refrigerator, ChefHat, ArrowUpRight, CheckCircle } from 'lucide-react'
 import { formatCurrency } from '../utils/formatters'
 
 export function DashboardPage() {
@@ -88,7 +88,6 @@ export function DashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-950 text-white p-6 rounded-3xl shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xl">🌿</span>
             <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">
               SaveBite Household Dashboard
             </span>
@@ -96,13 +95,6 @@ export function DashboardPage() {
           <h2 className="text-xl sm:text-2xl font-black tracking-tight">
             Welcome back, {userName}!
           </h2>
-          <p className="text-xs sm:text-sm text-emerald-100/90 mt-1 max-w-xl leading-relaxed">
-            Your inventory is valued at{' '}
-            <span className="font-bold text-white">
-              {formatCurrency(dashboardSummary?.estimatedPantryValue || 0)}
-            </span>
-            . You have saved ₹{dashboardSummary?.monthlySavingsINR || 1850} in grocery waste this month.
-          </p>
         </div>
 
         {/* Quick Actions */}
@@ -182,28 +174,6 @@ export function DashboardPage() {
                 <span className="font-bold text-slate-900">-18.4°C • Stable</span>
               </div>
             </div>
-          </div>
-
-          {/* Quick Waste Prevention Tip */}
-          <div className="bg-emerald-50/80 rounded-2xl border border-emerald-200/80 p-5">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 rounded-lg bg-emerald-800 text-white">
-                <Sparkles className="w-3.5 h-3.5" />
-              </div>
-              <h4 className="text-xs font-bold text-emerald-950 uppercase tracking-wider">
-                Pantry Tip
-              </h4>
-            </div>
-            <p className="text-xs text-slate-700 leading-relaxed mb-3">
-              "Your whole milk has been opened and expires in 24 hours. Consider making tea, yogurt compote, or freezing sourdough slices."
-            </p>
-            <Link
-              to="/recipes"
-              className="text-xs font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1"
-            >
-              <span>Explore Rescue Recipes</span>
-              <ArrowUpRight className="w-3 h-3" />
-            </Link>
           </div>
         </div>
       </div>

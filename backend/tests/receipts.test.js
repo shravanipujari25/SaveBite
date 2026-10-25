@@ -5,6 +5,7 @@ import request from 'supertest';
 import app from '../src/app.js';
 import { setupTestDatabase, teardownTestDatabase } from './helpers/mockSupabase.js';
 import { generateAccessToken } from '../src/utils/token.js';
+import { receiptRepository } from '../src/repositories/receipt.repository.js';
 
 describe('Receipt Upload, Parsing & Confirmation Suite (Phase 3)', () => {
   let mockDb;
@@ -79,6 +80,18 @@ describe('Receipt Upload, Parsing & Confirmation Suite (Phase 3)', () => {
       assert.equal(stored.file_name, 'receipt.jpg');
     });
 
+    test('should successfully upload when using the "receipt" alias form field name', async () => {
+      const res = await request(app)
+        .post('/api/v1/receipts/upload')
+        .set('Authorization', `Bearer ${authToken}`)
+        .attach('receipt', validJpegBuffer, 'receipt_alias.jpg');
+
+      assert.equal(res.status, 201);
+      assert.equal(res.body.status, 'success');
+      assert.ok(res.body.data.receipt.id);
+      assert.equal(res.body.data.receipt.file_name, 'receipt_alias.jpg');
+    });
+
     test('should successfully upload a valid PDF receipt', async () => {
       const res = await request(app)
         .post('/api/v1/receipts/upload')
@@ -109,6 +122,60 @@ describe('Receipt Upload, Parsing & Confirmation Suite (Phase 3)', () => {
       assert.equal(res.body.error.code, 'FILE_MISSING');
     });
 
+    test('should reject empty file with 400 Bad Request', async () => {
+      const res = await request(app)
+        .post('/api/v1/receipts/upload')
+        .set('Authorization', `Bearer ${authToken}`)
+        .attach('file', Buffer.alloc(0), 'empty.jpg');
+
+      assert.equal(res.status, 400);
+      assert.equal(res.body.error.code, 'EMPTY_FILE');
+    });
+
+    test('should reject request without authentication with 401 Unauthorized', async () => {
+      const res = await request(app)
+        .post('/api/v1/receipts/upload')
+        .attach('file', validJpegBuffer, 'receipt.jpg');
+
+      assert.equal(res.status, 401);
+      assert.equal(res.body.error.code, 'UNAUTHORIZED');
+    });
+
+    test('should reject user without household membership with 403 Forbidden', async () => {
+      const unattachedUser = {
+        id: '99999999-0000-1111-2222-333333333333',
+        name: 'No Household User',
+        email: 'nohousehold@savebite.com',
+        token_version: 1
+      };
+      mockDb.usersTable.set(unattachedUser.id, unattachedUser);
+      const unattachedToken = generateAccessToken(unattachedUser);
+
+      const res = await request(app)
+        .post('/api/v1/receipts/upload')
+        .set('Authorization', `Bearer ${unattachedToken}`)
+        .attach('file', validJpegBuffer, 'receipt.jpg');
+
+      assert.equal(res.status, 403);
+      assert.equal(res.body.error.code, 'FORBIDDEN_HOUSEHOLD');
+    });
+
+    test('should reject file exceeding maximum size limit with 413 Payload Too Large', async () => {
+      // 11MB file buffer
+      const oversizedBuffer = Buffer.alloc(11 * 1024 * 1024);
+      oversizedBuffer[0] = 0xFF;
+      oversizedBuffer[1] = 0xD8;
+      oversizedBuffer[2] = 0xFF;
+
+      const res = await request(app)
+        .post('/api/v1/receipts/upload')
+        .set('Authorization', `Bearer ${authToken}`)
+        .attach('file', oversizedBuffer, 'huge_receipt.jpg');
+
+      assert.equal(res.status, 413);
+      assert.equal(res.body.error.code, 'PAYLOAD_TOO_LARGE');
+    });
+
     test('should return 500 when Supabase Storage upload fails', async () => {
       mockDb.client.__storageFailUpload = true;
 
@@ -119,6 +186,27 @@ describe('Receipt Upload, Parsing & Confirmation Suite (Phase 3)', () => {
 
       assert.equal(res.status, 500);
       assert.equal(res.body.error.code, 'STORAGE_UPLOAD_FAILED');
+    });
+
+    test('should rollback and remove uploaded storage file if database insert fails', async () => {
+      const origCreateReceipt = receiptRepository.createReceipt;
+      receiptRepository.createReceipt = async () => {
+        throw new Error('Simulated database insert failure');
+      };
+
+      try {
+        const res = await request(app)
+          .post('/api/v1/receipts/upload')
+          .set('Authorization', `Bearer ${authToken}`)
+          .attach('file', validJpegBuffer, 'receipt.jpg');
+
+        assert.equal(res.status, 500);
+        assert.ok(mockDb.client.__removedStoragePaths);
+        assert.equal(mockDb.client.__removedStoragePaths.length, 1);
+        assert.ok(mockDb.client.__removedStoragePaths[0].includes('households/'));
+      } finally {
+        receiptRepository.createReceipt = origCreateReceipt;
+      }
     });
   });
 

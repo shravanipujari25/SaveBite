@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { User, Settings, LogOut, ChevronDown, ShieldCheck } from 'lucide-react'
+import { Settings, LogOut, ChevronDown } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
 export function UserProfileMenu() {
@@ -46,7 +46,6 @@ export function UserProfileMenu() {
         </div>
         <div className="hidden md:block text-left">
           <p className="text-xs font-bold text-slate-800 leading-tight">{displayName}</p>
-          <p className="text-[10px] text-slate-400 leading-tight">Admin</p>
         </div>
         <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
       </button>
@@ -56,20 +55,9 @@ export function UserProfileMenu() {
           <div className="p-3.5 border-b border-slate-100 bg-slate-50">
             <p className="text-xs font-bold text-slate-900">{displayName}</p>
             <p className="text-[11px] text-slate-500 truncate">{displayEmail}</p>
-            <div className="mt-1 flex items-center gap-1 text-[10px] text-emerald-700 font-semibold">
-              <ShieldCheck className="w-3 h-3" /> Household Admin
-            </div>
           </div>
 
           <div className="p-1">
-            <Link
-              to="/profile"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-emerald-800 rounded-lg transition-colors"
-            >
-              <User className="w-4 h-4 text-slate-400" />
-              <span>Profile & Household</span>
-            </Link>
             <Link
               to="/settings"
               onClick={() => setIsOpen(false)}

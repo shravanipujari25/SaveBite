@@ -454,6 +454,11 @@ export const createMockDatabaseClient = async (options = {}) => {
             },
             error: null
           };
+        },
+        remove: async (paths) => {
+          client.__removedStoragePaths = client.__removedStoragePaths || [];
+          client.__removedStoragePaths.push(...paths);
+          return { data: paths, error: null };
         }
       })
     }
