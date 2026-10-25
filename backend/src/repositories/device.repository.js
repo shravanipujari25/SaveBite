@@ -37,7 +37,7 @@ export class DeviceRepository {
         device_type: deviceData.device_type || 'esp32',
         zone: deviceData.zone || 'refrigerator',
         source_type: deviceData.source_type || 'physical',
-        status: 'online'
+        status: 'active'
       })
       .select('id, household_id, name, device_code, device_type, zone, source_type, status, last_seen_at, created_at, updated_at')
       .single();

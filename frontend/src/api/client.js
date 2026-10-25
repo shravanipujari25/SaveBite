@@ -262,13 +262,16 @@ export const api = {
 
   // ==================== RECIPES ====================
   recipes: {
-    async getWasteLessSuggestions() {
+    async getWasteLessSuggestions(options = {}) {
       if (USE_MOCKS) {
         await delay()
         return { data: initialRecipes, error: null }
       }
 
-      const res = await request('/recipes/rescue')
+      const res = await request('/recipes/rescue', options)
+      if (res.aborted) {
+        return { data: null, error: null, aborted: true }
+      }
       if (res.error) {
         // Return clear error state without substituting mock data
         return {

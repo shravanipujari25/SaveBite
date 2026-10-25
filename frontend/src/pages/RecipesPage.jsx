@@ -1,49 +1,99 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { api } from '../api/client'
+import { useAuth } from '../context/AuthContext'
 import { usePantry } from '../context/PantryContext'
 import Card from '../components/common/Card'
 import Badge from '../components/common/Badge'
 import Button from '../components/common/Button'
 import LoadingSpinner from '../components/common/LoadingSpinner'
-import { ChefHat, Clock, Sparkles, AlertCircle, CheckCircle2, Info, UtensilsCrossed } from 'lucide-react'
+import { ChefHat, Clock, Sparkles, AlertCircle, CheckCircle2, Info, UtensilsCrossed, RefreshCw } from 'lucide-react'
 import { formatCurrency } from '../utils/formatters'
 import Tooltip from '../components/common/Tooltip'
 
 export function RecipesPage() {
+  const { isAuthenticated, loading: authLoading } = useAuth()
   const { refresh } = usePantry()
   const [recipes, setRecipes] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [selectedRecipe, setSelectedRecipe] = useState(null)
   const [cookingSuccess, setCookingSuccess] = useState('')
+  const [isRetrying, setIsRetrying] = useState(false)
+  const activeControllerRef = useRef(null)
 
-  useEffect(() => {
-    async function loadRecipes() {
-      setLoading(true)
-      setError(null)
-      try {
-        const res = await api.recipes.getWasteLessSuggestions()
-        if (res.error) {
-          setError(res.error)
-        } else if (res.data) {
-          setRecipes(res.data)
-          setSelectedRecipe(res.data[0] || null)
-        }
-      } catch (err) {
-        console.error('Failed to load recipes:', err)
-        setError(err.message || 'Error communicating with recipe rescue service')
-      } finally {
+  const fetchRecipes = useCallback(async (signal) => {
+    if (authLoading || !isAuthenticated) {
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const res = await api.recipes.getWasteLessSuggestions({ signal })
+      if (res?.aborted || signal?.aborted) {
+        return
+      }
+
+      if (res?.error) {
+        setError(res.error)
+        setRecipes([])
+        setSelectedRecipe(null)
+      } else if (res?.data) {
+        setRecipes(res.data)
+        setSelectedRecipe(res.data[0] || null)
+        setError(null)
+      }
+    } catch (err) {
+      if (signal?.aborted || err.name === 'AbortError') {
+        return
+      }
+      console.error('Failed to load recipes:', err)
+      setError(err.message || 'Error communicating with recipe rescue service')
+      setRecipes([])
+      setSelectedRecipe(null)
+    } finally {
+      if (!signal?.aborted) {
         setLoading(false)
+        setIsRetrying(false)
       }
     }
-    loadRecipes()
-  }, [])
+  }, [authLoading, isAuthenticated])
+
+  useEffect(() => {
+    if (authLoading || !isAuthenticated) return
+
+    if (activeControllerRef.current) {
+      activeControllerRef.current.abort()
+    }
+
+    const controller = new AbortController()
+    activeControllerRef.current = controller
+
+    fetchRecipes(controller.signal)
+
+    return () => {
+      controller.abort()
+    }
+  }, [authLoading, isAuthenticated, fetchRecipes])
+
+  const handleRetry = () => {
+    if (loading || isRetrying) return
+
+    if (activeControllerRef.current) {
+      activeControllerRef.current.abort()
+    }
+
+    const controller = new AbortController()
+    activeControllerRef.current = controller
+    setIsRetrying(true)
+    fetchRecipes(controller.signal)
+  }
 
   const handleCookRecipe = async () => {
     if (!selectedRecipe) return
     try {
-      // Find matching items from rescued_items
-      const atRiskItems = selectedRecipe.expiringIngredientsUsed || []
       setCookingSuccess(`Recipe "${selectedRecipe.title}" recorded! Inventory rescued.`)
       await refresh()
       setTimeout(() => setCookingSuccess(''), 4000)
@@ -86,44 +136,44 @@ export function RecipesPage() {
       )}
 
       {loading ? (
-        <LoadingSpinner message="Matching pantry items with waste-less recipes..." />
+        <div className="py-12">
+          <LoadingSpinner message="Matching pantry items with waste-less recipes..." />
+        </div>
       ) : error ? (
-        <Card padding="p-8" className="text-center space-y-4 max-w-xl mx-auto">
-          <div className="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-800 text-2xl mx-auto">
-            🍳
+        <Card padding="p-8" className="text-center space-y-4 max-w-xl mx-auto border-amber-200 bg-amber-50/30">
+          <div className="w-14 h-14 rounded-2xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-800 text-2xl mx-auto shadow-sm">
+            <AlertCircle className="w-7 h-7 text-amber-600" />
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <h3 className="text-base font-bold text-slate-900">
               Recipe Suggestions Unavailable
             </h3>
             <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
-              {error}
+              The recipe rescue service encountered an upstream communication issue (502 Bad Gateway). Live AI recipe recommendations require the AI service to be online.
             </p>
           </div>
-          <div className="pt-2">
+
+          <div className="p-3 rounded-xl bg-slate-900/5 border border-slate-200/80 max-w-md mx-auto text-left font-mono text-[11px] text-slate-700 break-words">
+            <span className="font-semibold text-slate-900">Error: </span>
+            {error}
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => {
-                setLoading(true);
-                setError(null);
-                api.recipes.getWasteLessSuggestions().then((res) => {
-                  if (res.error) setError(res.error);
-                  else if (res.data) {
-                    setRecipes(res.data);
-                    setSelectedRecipe(res.data[0] || null);
-                  }
-                }).catch((err) => {
-                  setError(err.message || 'Error communicating with recipe rescue service');
-                }).finally(() => setLoading(false));
-              }}
+              icon={RefreshCw}
+              disabled={loading || isRetrying}
+              onClick={handleRetry}
+              className="font-semibold"
             >
-              Retry
+              {isRetrying ? 'Retrying...' : 'Retry Connection'}
             </Button>
           </div>
+
           <p className="text-[11px] text-slate-400">
-            Note: Recipe suggestions require the AI microservice running at http://localhost:8000.
+            Upstream Service: AI Recommendation Engine (<span className="font-mono">http://localhost:8000</span>). SaveBite does not fabricate mock recipes when the upstream service is offline.
           </p>
         </Card>
       ) : recipes.length === 0 ? (
@@ -133,7 +183,7 @@ export function RecipesPage() {
           </div>
           <h3 className="text-sm font-bold text-slate-800">No urgent recipes needed!</h3>
           <p className="text-xs text-slate-500">
-            All your pantry groceries have healthy shelf life remaining.
+            All your pantry groceries have healthy shelf life remaining. When items approach their use-first date, tailored rescue recipes will automatically appear here.
           </p>
         </Card>
       ) : (

@@ -36,8 +36,13 @@ export function PantryProvider({ children }) {
       setDashboardSummary(summaryRes.data || null)
       setActivityLogs(logsRes.data || [])
     } catch (err) {
-      console.error('[PantryContext] Error loading inventory:', err)
-      setError(err.message || 'Failed to load pantry data')
+      // Don't treat expired session as an unexpected pantry failure (AuthContext handles redirection)
+      if (err.message?.includes('Invalid or expired access token') || err.message?.includes('401')) {
+        setError(null)
+      } else {
+        console.error('[PantryContext] Error loading inventory:', err)
+        setError(err.message || 'Failed to load pantry data')
+      }
     } finally {
       setLoading(false)
     }

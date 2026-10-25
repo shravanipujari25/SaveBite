@@ -35,6 +35,16 @@ export async function request(endpoint, options = {}) {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), timeoutMs)
 
+  let onCallerAbort = null
+  if (options.signal) {
+    if (options.signal.aborted) {
+      clearTimeout(timer)
+      return { data: null, error: null, status: 0, aborted: true }
+    }
+    onCallerAbort = () => controller.abort()
+    options.signal.addEventListener('abort', onCallerAbort, { once: true })
+  }
+
   try {
     const response = await fetch(url, {
       ...options,
@@ -42,6 +52,9 @@ export async function request(endpoint, options = {}) {
       signal: controller.signal,
     })
     clearTimeout(timer)
+    if (onCallerAbort && options.signal) {
+      options.signal.removeEventListener('abort', onCallerAbort)
+    }
 
     let json = null
     const contentType = response.headers.get('content-type') || ''
@@ -93,6 +106,19 @@ export async function request(endpoint, options = {}) {
     return { data: responseData, error: null, status: response.status }
   } catch (err) {
     clearTimeout(timer)
+    if (onCallerAbort && options.signal) {
+      options.signal.removeEventListener('abort', onCallerAbort)
+    }
+
+    if (options.signal?.aborted) {
+      return {
+        data: null,
+        error: null,
+        status: 0,
+        aborted: true,
+      }
+    }
+
     if (err.name === 'AbortError') {
       return {
         data: null,
