@@ -16,18 +16,23 @@ export class ShoppingListRepository {
   async create(itemData, client = null) {
     const db = client || this.getClient();
 
+    const insertPayload = {
+      household_id: itemData.household_id,
+      name: itemData.name.trim(),
+      quantity: itemData.quantity ?? 1,
+      unit: itemData.unit || 'piece',
+      category: itemData.category || 'other',
+      notes: itemData.notes || null,
+      is_purchased: itemData.is_purchased !== undefined 
+        ? Boolean(itemData.is_purchased) 
+        : (itemData.status === 'purchased'),
+      purchased_at: itemData.purchased_at || null,
+      created_by: itemData.created_by || itemData.added_by || null
+    };
+
     const { data, error } = await db
       .from('shopping_list_items')
-      .insert({
-        household_id: itemData.household_id,
-        name: itemData.name.trim(),
-        quantity: itemData.quantity ?? 1,
-        unit: itemData.unit || 'piece',
-        category: itemData.category || 'other',
-        notes: itemData.notes || null,
-        is_purchased: false,
-        created_by: itemData.created_by || itemData.added_by || null
-      })
+      .insert(insertPayload)
       .select('*')
       .single();
 
@@ -36,11 +41,17 @@ export class ShoppingListRepository {
       throw error;
     }
 
-    return data;
+    return {
+      ...data,
+      status: data.is_purchased ? 'purchased' : 'needed',
+      estimated_price: itemData.estimated_price !== undefined ? itemData.estimated_price : 3.50,
+      recommendation_reason: itemData.recommendation_reason || null,
+      source_type: itemData.source_type || 'manual'
+    };
   }
 
   /**
-   * Find all shopping list items for a household with optional is_purchased filter.
+   * Find all shopping list items for a household with optional is_purchased or status filter.
    *
    * @param {string} householdId
    * @param {object} [query={}]
@@ -55,7 +66,11 @@ export class ShoppingListRepository {
       .select('*')
       .eq('household_id', householdId);
 
-    if (query.is_purchased !== undefined && query.is_purchased !== 'all') {
+    // Filter using existing database schema column is_purchased
+    if (query.status && query.status !== 'all') {
+      const isPurchased = query.status === 'purchased';
+      q = q.eq('is_purchased', isPurchased);
+    } else if (query.is_purchased !== undefined && query.is_purchased !== 'all') {
       const isPurchasedBool = query.is_purchased === true || query.is_purchased === 'true';
       q = q.eq('is_purchased', isPurchasedBool);
     }
@@ -69,7 +84,12 @@ export class ShoppingListRepository {
       throw error;
     }
 
-    return data || [];
+    return (data || []).map((row) => ({
+      ...row,
+      status: row.is_purchased ? 'purchased' : 'needed',
+      estimated_price: row.estimated_price !== undefined ? row.estimated_price : 3.50,
+      source_type: row.source_type || 'manual'
+    }));
   }
 
   /**
@@ -95,7 +115,14 @@ export class ShoppingListRepository {
       throw error;
     }
 
-    return data;
+    if (!data) return null;
+
+    return {
+      ...data,
+      status: data.is_purchased ? 'purchased' : 'needed',
+      estimated_price: data.estimated_price !== undefined ? data.estimated_price : 3.50,
+      source_type: data.source_type || 'manual'
+    };
   }
 
   /**
@@ -110,12 +137,25 @@ export class ShoppingListRepository {
   async update(id, householdId, updates, client = null) {
     const db = client || this.getClient();
 
+    // Whitelist known columns in shopping_list_items schema to prevent PGRST204 errors
+    const validColumns = ['name', 'quantity', 'unit', 'category', 'notes', 'is_purchased', 'purchased_at', 'created_by'];
+    const sanitizedUpdates = {};
+
+    for (const key of Object.keys(updates)) {
+      if (validColumns.includes(key)) {
+        sanitizedUpdates[key] = updates[key];
+      }
+    }
+
+    if (updates.status !== undefined && sanitizedUpdates.is_purchased === undefined) {
+      sanitizedUpdates.is_purchased = updates.status === 'purchased';
+    }
+
+    sanitizedUpdates.updated_at = new Date().toISOString();
+
     const { data, error } = await db
       .from('shopping_list_items')
-      .update({
-        ...updates,
-        updated_at: new Date().toISOString()
-      })
+      .update(sanitizedUpdates)
       .eq('id', id)
       .eq('household_id', householdId)
       .select('*')
@@ -126,7 +166,13 @@ export class ShoppingListRepository {
       throw error;
     }
 
-    return data;
+    return {
+      ...data,
+      status: data.is_purchased ? 'purchased' : 'needed',
+      estimated_price: updates.estimated_price !== undefined ? updates.estimated_price : (data.estimated_price || 3.50),
+      recommendation_reason: updates.recommendation_reason || data.recommendation_reason || null,
+      source_type: updates.source_type || data.source_type || 'manual'
+    };
   }
 
   /**
@@ -155,6 +201,64 @@ export class ShoppingListRepository {
   }
 
   /**
+   * Find all active pantry inventory items for a household.
+   * Excludes archived items.
+   *
+   * @param {string} householdId
+   * @param {object} [client]
+   * @returns {Promise<object[]>}
+   */
+  async findActiveInventoryItems(householdId, client = null) {
+    const db = client || this.getClient();
+
+    const { data, error } = await db
+      .from('inventory_items')
+      .select('*')
+      .eq('household_id', householdId)
+      .eq('status', 'active');
+
+    if (error) {
+      logger.warn({ householdId, error: error.message }, 'Failed to load active inventory items');
+      return [];
+    }
+
+    return data || [];
+  }
+
+  /**
+   * Find consumption events for the household within a window of days.
+   *
+   * @param {string} householdId
+   * @param {number} days
+   * @param {object} [client]
+   * @returns {Promise<object[]>}
+   */
+  async findConsumptionEvents(householdId, days = 30, client = null) {
+    const db = client || this.getClient();
+    const sinceDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+
+    const { data, error } = await db
+      .from('inventory_events')
+      .select('*')
+      .eq('household_id', householdId)
+      .gte('created_at', sinceDate);
+
+    if (error) {
+      logger.warn({ householdId, error: error.message }, 'Failed to query consumption events');
+      return [];
+    }
+
+    if (!data || !Array.isArray(data)) return [];
+
+    return data.filter(e =>
+      e.event_type === 'consumed' ||
+      e.event_type === 'consume' ||
+      e.event_type === 'recipe_rescue' ||
+      (e.quantity_change && Number(e.quantity_change) < 0)
+    );
+  }
+
+  /**
    * Find active inventory items matching a product name in the household to warn about overbuying.
    *
    * @param {string} householdId
@@ -168,7 +272,7 @@ export class ShoppingListRepository {
 
     const { data, error } = await db
       .from('inventory_items')
-      .select('id, name, quantity, unit, storage_location, expiry_date, status')
+      .select('*')
       .eq('household_id', householdId)
       .eq('status', 'active');
 
@@ -179,15 +283,37 @@ export class ShoppingListRepository {
 
     if (!data || !Array.isArray(data)) return [];
 
-    // Filter matching items by substring or case-insensitive match
     return data.filter((item) => {
-      const existingName = item.name.toLowerCase();
+      const existingName = (item.name || '').toLowerCase();
       return (
         existingName === cleanName ||
         existingName.includes(cleanName) ||
         cleanName.includes(existingName)
       );
     });
+  }
+
+  /**
+   * Find an existing inventory item in pantry with same name and category/location to merge stock into.
+   *
+   * @param {string} householdId
+   * @param {string} name
+   * @param {object} [client]
+   * @returns {Promise<object|null>}
+   */
+  async findMatchingPantryItem(householdId, name, client = null) {
+    const db = client || this.getClient();
+    const cleanName = name.trim().toLowerCase();
+
+    const { data, error } = await db
+      .from('inventory_items')
+      .select('*')
+      .eq('household_id', householdId)
+      .eq('status', 'active');
+
+    if (error || !data) return null;
+
+    return data.find(i => (i.name || '').trim().toLowerCase() === cleanName) || null;
   }
 }
 

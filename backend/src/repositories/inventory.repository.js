@@ -548,10 +548,22 @@ export class InventoryRepository {
       }
     }
 
-    // Sort Use-First items: prioritizing earliest upcoming expiry dates first
-    // Expired items are separated to avoid misrepresenting them as upcoming
+    // Sort expiring soon items by earliest upcoming expiry dates first
     expiringSoonItems.sort((a, b) => (a.expiry_date > b.expiry_date ? 1 : -1));
-    upcomingItems.sort((a, b) => (a.expiry_date > b.expiry_date ? 1 : -1));
+
+    // Sort Use-First items: prioritize AI use_first_score descending (higher = more urgent),
+    // falling back to earliest upcoming expiry dates
+    upcomingItems.sort((a, b) => {
+      const aScore = a.use_first_score !== null && a.use_first_score !== undefined ? Number(a.use_first_score) : 0;
+      const bScore = b.use_first_score !== null && b.use_first_score !== undefined ? Number(b.use_first_score) : 0;
+      if (aScore !== bScore) {
+        return bScore - aScore; // Highest score first
+      }
+      if (!a.expiry_date && !b.expiry_date) return 0;
+      if (!a.expiry_date) return 1;
+      if (!b.expiry_date) return -1;
+      return a.expiry_date > b.expiry_date ? 1 : -1;
+    });
 
     // Top 5 Use-First items
     const topUseFirst = upcomingItems.slice(0, 5);

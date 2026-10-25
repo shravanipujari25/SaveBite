@@ -1,0 +1,132 @@
+{
+  "_comment": "Synthetic Household Inventory Dataset for SaveBite AI Phase 6. All records are explicitly simulated.",
+  "metadata": {
+    "source": "SaveBite Synthetic Inventory Generator",
+    "version": "1.0.0",
+    "generated_for": "Phase 6 Duplicate-Purchase Detection Intelligence",
+    "simulated": true,
+    "description": "Deterministic synthetic inventory records covering available stock, near-expiry, expired, consumed, discarded, multi-unit quantities, and unknown statuses."
+  },
+  "inventory": [
+    {
+      "inventory_item_id": "INV-001",
+      "product_id": "GRC021",
+      "product_name": "White Rice",
+      "quantity": 2.0,
+      "unit": "kg",
+      "purchase_date": "2026-10-01",
+      "expiry_date": "2027-10-01",
+      "opened": false,
+      "status": "available",
+      "simulated": true
+    },
+    {
+      "inventory_item_id": "INV-002",
+      "product_id": "GRC016",
+      "product_name": "Milk",
+      "quantity": 500.0,
+      "unit": "ml",
+      "purchase_date": "2026-10-22",
+      "expiry_date": "2026-10-29",
+      "opened": true,
+      "status": "available",
+      "simulated": true
+    },
+    {
+      "inventory_item_id": "INV-003",
+      "product_id": "GRC008",
+      "product_name": "Tomato",
+      "quantity": 3.0,
+      "unit": "unit",
+      "purchase_date": "2026-10-20",
+      "expiry_date": "2026-10-25",
+      "opened": false,
+      "status": "available",
+      "simulated": true
+    },
+    {
+      "inventory_item_id": "INV-004",
+      "product_id": "GRC011",
+      "product_name": "Spinach",
+      "quantity": 200.0,
+      "unit": "g",
+      "purchase_date": "2026-10-15",
+      "expiry_date": "2026-10-20",
+      "opened": true,
+      "status": "expired",
+      "simulated": true
+    },
+    {
+      "inventory_item_id": "INV-005",
+      "product_id": "GRC023",
+      "product_name": "Whole Wheat Bread",
+      "quantity": 1.0,
+      "unit": "unit",
+      "purchase_date": "2026-10-18",
+      "expiry_date": "2026-10-25",
+      "opened": true,
+      "status": "consumed",
+      "simulated": true
+    },
+    {
+      "inventory_item_id": "INV-006",
+      "product_id": "GRC001",
+      "product_name": "Apple",
+      "quantity": 4.0,
+      "unit": "unit",
+      "purchase_date": "2026-10-10",
+      "expiry_date": "2026-10-23",
+      "opened": false,
+      "status": "discarded",
+      "simulated": true
+    },
+    {
+      "inventory_item_id": "INV-007",
+      "product_id": "GRC017",
+      "product_name": "Cheddar Cheese",
+      "quantity": 250.0,
+      "unit": "g",
+      "purchase_date": "2026-09-01",
+      "expiry_date": "2026-11-30",
+      "opened": false,
+      "status": "available",
+      "simulated": true
+    },
+    {
+      "inventory_item_id": "INV-008",
+      "product_id": "GRC022",
+      "product_name": "Rolled Oats",
+      "quantity": 1.0,
+      "unit": "kg",
+      "purchase_date": "2026-08-15",
+      "expiry_date": null,
+      "opened": false,
+      "status": "available",
+      "simulated": true
+    },
+    {
+      "inventory_item_id": "INV-009",
+      "product_id": "GRC031",
+      "product_name": "Fresh Chicken Breast",
+      "quantity": 500.0,
+      "unit": "g",
+      "purchase_date": "2026-10-23",
+      "expiry_date": "2026-10-25",
+      "opened": false,
+      "status": "available",
+      "simulated": true
+    },
+    {
+      "inventory_item_id": "INV-010",
+      "product_id": "GRC030",
+      "product_name": "Eggs",
+      "quantity": 6.0,
+      "unit": "unit",
+      "purchase_date": "2026-10-12",
+      "expiry_date": "2026-11-09",
+      "opened": false,
+      "status": "available",
+      "simulated": true
+    }
+  ]
+}

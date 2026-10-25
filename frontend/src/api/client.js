@@ -320,14 +320,19 @@ export const api = {
 
   // ==================== SHOPPING LIST ====================
   shoppingList: {
-    async getAll() {
+    async getAll(query = {}) {
       if (USE_MOCKS) {
         await delay()
         const list = getStoredOrInitial(STORAGE_KEYS.SHOPPING, initialShoppingList)
         return { data: list, error: null }
       }
 
-      const res = await request('/shopping-list')
+      const params = new URLSearchParams()
+      if (query.status) params.append('status', query.status)
+      if (query.is_purchased !== undefined) params.append('is_purchased', query.is_purchased)
+      const queryString = params.toString() ? `?${params.toString()}` : ''
+
+      const res = await request(`/shopping-list${queryString}`)
       if (res.error) {
         return { data: null, error: res.error, status: res.status }
       }
@@ -336,46 +341,54 @@ export const api = {
       const mapped = (Array.isArray(rawItems) ? rawItems : []).map((item) => ({
         id: item.id,
         name: item.name,
-        category: item.category,
+        category: item.category || 'other',
         quantity: Number(item.quantity) || 1,
-        unit: item.unit || 'pack',
-        estimatedPrice: 3.5,
-        isCompleted: Boolean(item.is_purchased),
-        isAutoSuggested: false,
+        unit: item.unit || 'piece',
+        estimatedPrice: item.estimated_price !== null && item.estimated_price !== undefined ? Number(item.estimated_price) : 3.5,
+        status: item.status || (item.is_purchased ? 'purchased' : 'needed'),
+        isCompleted: Boolean(item.is_purchased || item.status === 'purchased'),
+        isAutoSuggested: Boolean(item.source_type === 'recommendation' || item.recommendation_reason),
         notes: item.notes || '',
+        recommendationReason: item.recommendation_reason || null,
+        pantryStock: item.pantry_stock || null,
         purchasedAt: item.purchased_at,
+        purchasedQuantity: item.purchased_quantity,
+        purchasePrice: item.purchase_price,
         createdAt: item.created_at,
       }))
 
       return { data: mapped, error: null }
     },
 
-    async toggleItem(id) {
+    async getRecommendations(options = {}) {
       if (USE_MOCKS) {
-        const list = getStoredOrInitial(STORAGE_KEYS.SHOPPING, initialShoppingList)
-        const updated = list.map((item) =>
-          item.id === id ? { ...item, isCompleted: !item.isCompleted } : item
-        )
-        setStored(STORAGE_KEYS.SHOPPING, updated)
-        return { data: updated, error: null }
+        return { data: { recommendations: [], summary: {} }, error: null }
       }
 
-      // Check current purchased state
-      const { data: currentItems } = await this.getAll()
-      const found = (currentItems || []).find((i) => i.id === id)
+      const params = new URLSearchParams()
+      if (options.replenishment_days) params.append('replenishment_days', options.replenishment_days)
+      const queryString = params.toString() ? `?${params.toString()}` : ''
 
-      if (found && !found.isCompleted) {
-        // Mark purchased
-        await request(`/shopping-list/${id}/purchase`, { method: 'POST' })
-      } else {
-        // Unmark purchased
-        await request(`/shopping-list/${id}`, {
-          method: 'PATCH',
-          body: JSON.stringify({ is_purchased: false }),
-        })
+      const res = await request(`/shopping-list/recommendations${queryString}`)
+      if (res.error) {
+        return { data: null, error: res.error, status: res.status }
+      }
+      return { data: res.data, error: null }
+    },
+
+    async evaluateDuplicate(data) {
+      if (USE_MOCKS) {
+        return { data: { warnings: [], pantryMatch: null }, error: null }
       }
 
-      return this.getAll()
+      return request('/shopping-list/evaluate-duplicate', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: data.name.trim(),
+          quantity: Number(data.quantity) || 1,
+          unit: mapUnitToBackend(data.unit || 'piece'),
+        }),
+      })
     },
 
     async addItem(item) {
@@ -385,6 +398,7 @@ export const api = {
           id: 'shop_' + Date.now().toString(36),
           isCompleted: false,
           isAutoSuggested: false,
+          status: 'needed',
           ...item,
         }
         const updated = [newItem, ...list]
@@ -400,6 +414,10 @@ export const api = {
           quantity: Number(item.quantity) || 1,
           unit: mapUnitToBackend(item.unit),
           notes: item.notes || null,
+          status: item.status || 'needed',
+          estimated_price: item.estimatedPrice !== undefined ? Number(item.estimatedPrice) : 3.5,
+          recommendation_reason: item.recommendationReason || null,
+          source_type: item.sourceType || 'manual',
         }),
       })
 
@@ -413,13 +431,97 @@ export const api = {
           id: created.id,
           name: created.name,
           category: created.category,
-          quantity: created.quantity,
+          quantity: Number(created.quantity) || 1,
           unit: created.unit,
-          estimatedPrice: Number(item.estimatedPrice) || 3.5,
+          estimatedPrice: created.estimated_price !== null && created.estimated_price !== undefined ? Number(created.estimated_price) : 3.5,
+          status: created.status || (created.is_purchased ? 'purchased' : 'needed'),
           isCompleted: Boolean(created.is_purchased),
-          isAutoSuggested: false,
+          isAutoSuggested: Boolean(created.source_type === 'recommendation' || created.recommendation_reason),
+          notes: created.notes || '',
+          recommendationReason: created.recommendation_reason || null,
+          pantryStock: created.pantry_match ? {
+            available_quantity: created.pantry_match.existing_quantity,
+            unit: created.pantry_match.unit,
+            has_stock: created.pantry_match.existing_quantity > 0,
+            closest_expiry: created.pantry_match.expiry_date,
+            is_potential_duplicate: created.pantry_match.is_sufficient,
+          } : null,
+          warnings: res.data?.warnings || [],
         },
         error: null,
+      }
+    },
+
+    async updateItem(id, updates) {
+      if (USE_MOCKS) {
+        const list = getStoredOrInitial(STORAGE_KEYS.SHOPPING, initialShoppingList)
+        const updated = list.map((item) => (item.id === id ? { ...item, ...updates } : item))
+        setStored(STORAGE_KEYS.SHOPPING, updated)
+        return { data: updated.find((i) => i.id === id), error: null }
+      }
+
+      const payload = {}
+      if (updates.name !== undefined) payload.name = updates.name.trim()
+      if (updates.quantity !== undefined) payload.quantity = Number(updates.quantity)
+      if (updates.unit !== undefined) payload.unit = mapUnitToBackend(updates.unit)
+      if (updates.category !== undefined) payload.category = mapCategoryToBackend(updates.category)
+      if (updates.notes !== undefined) payload.notes = updates.notes
+      if (updates.status !== undefined) payload.status = updates.status
+      if (updates.estimatedPrice !== undefined) payload.estimated_price = Number(updates.estimatedPrice)
+      if (updates.isCompleted !== undefined) payload.is_purchased = Boolean(updates.isCompleted)
+
+      const res = await request(`/shopping-list/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+      })
+
+      if (res.error) {
+        return { data: null, error: res.error, status: res.status }
+      }
+
+      return { data: res.data?.item || res.data, error: null }
+    },
+
+    async markPurchased(id, purchaseData = {}) {
+      if (USE_MOCKS) {
+        return this.toggleItem(id)
+      }
+
+      const res = await request(`/shopping-list/${id}/purchase`, {
+        method: 'POST',
+        body: JSON.stringify({
+          purchased_quantity: purchaseData.purchasedQuantity ? Number(purchaseData.purchasedQuantity) : undefined,
+          purchase_price: purchaseData.purchasePrice ? Number(purchaseData.purchasePrice) : undefined,
+          purchase_date: purchaseData.purchaseDate || undefined,
+          expiry_date: purchaseData.expiryDate || undefined,
+          storage_location: purchaseData.storageLocation || 'pantry',
+        }),
+      })
+
+      if (res.error) {
+        return { data: null, error: res.error, status: res.status }
+      }
+
+      return { data: res.data, error: null }
+    },
+
+    async toggleItem(id) {
+      if (USE_MOCKS) {
+        const list = getStoredOrInitial(STORAGE_KEYS.SHOPPING, initialShoppingList)
+        const updated = list.map((item) =>
+          item.id === id ? { ...item, isCompleted: !item.isCompleted } : item
+        )
+        setStored(STORAGE_KEYS.SHOPPING, updated)
+        return { data: updated, error: null }
+      }
+
+      const { data: currentItems } = await this.getAll()
+      const found = (currentItems || []).find((i) => i.id === id)
+
+      if (found && !found.isCompleted) {
+        return this.markPurchased(id)
+      } else {
+        return this.updateItem(id, { status: 'needed', isCompleted: false })
       }
     },
 

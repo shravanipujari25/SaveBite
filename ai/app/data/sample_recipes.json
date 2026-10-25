@@ -1,0 +1,512 @@
+{
+  "_comment": "Curated Local Recipe Dataset for SaveBite AI Phase 7 Recipe Recommendation Intelligence.",
+  "metadata": {
+    "source": "SaveBite Recipe Knowledge Base",
+    "version": "1.0.0",
+    "description": "Static recipe dataset aligned with SaveBite grocery catalog (products.csv), containing ingredients with quantities, units, and optionality.",
+    "recipe_count": 25
+  },
+  "recipes": [
+    {
+      "recipe_id": "REC-001",
+      "name": "Tomato Rice",
+      "description": "Flavorful spiced rice cooked with ripe tomatoes and onions.",
+      "preparation_time_minutes": 25,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "vegan", "gluten-free"],
+      "ingredients": [
+        {"name": "White Rice", "product_id": "GRC021", "quantity": 200.0, "unit": "g", "optional": false},
+        {"name": "Tomato", "product_id": "GRC008", "quantity": 2.0, "unit": "unit", "optional": false},
+        {"name": "Onion", "product_id": "GRC010", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Olive Oil", "product_id": "GRC035", "quantity": 15.0, "unit": "ml", "optional": true}
+      ],
+      "instructions": [
+        "Rinse and cook the white rice until fluffy.",
+        "Heat oil in a pan, sauté diced onions until golden.",
+        "Add chopped tomatoes and spices, cooking until softened into a rich gravy.",
+        "Fold in the cooked rice gently and serve hot."
+      ]
+    },
+    {
+      "recipe_id": "REC-002",
+      "name": "Vegetable Pulao",
+      "description": "Fragrant basmati or white rice cooked with carrots, bell peppers, and onions.",
+      "preparation_time_minutes": 30,
+      "servings": 3,
+      "difficulty": "medium",
+      "dietary_tags": ["vegetarian", "vegan", "gluten-free"],
+      "ingredients": [
+        {"name": "White Rice", "product_id": "GRC021", "quantity": 250.0, "unit": "g", "optional": false},
+        {"name": "Carrot", "product_id": "GRC012", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Bell Pepper", "product_id": "GRC014", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Onion", "product_id": "GRC010", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Butter", "product_id": "GRC019", "quantity": 15.0, "unit": "g", "optional": true}
+      ],
+      "instructions": [
+        "Sauté sliced onions, diced carrots, and chopped bell peppers in butter.",
+        "Add washed rice and toast lightly for 2 minutes.",
+        "Add water and simmer covered until rice is fully cooked and vegetables are tender."
+      ]
+    },
+    {
+      "recipe_id": "REC-003",
+      "name": "Spinach Tomato Omelette",
+      "description": "Nutritious protein-packed egg omelette loaded with fresh spinach and juicy tomatoes.",
+      "preparation_time_minutes": 10,
+      "servings": 1,
+      "difficulty": "easy",
+      "dietary_tags": ["high-protein", "gluten-free"],
+      "ingredients": [
+        {"name": "Eggs", "product_id": "GRC030", "quantity": 2.0, "unit": "unit", "optional": false},
+        {"name": "Spinach", "product_id": "GRC011", "quantity": 50.0, "unit": "g", "optional": false},
+        {"name": "Tomato", "product_id": "GRC008", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Butter", "product_id": "GRC019", "quantity": 10.0, "unit": "g", "optional": true}
+      ],
+      "instructions": [
+        "Whisk eggs in a bowl with a pinch of salt and pepper.",
+        "Melt butter in a skillet, sauté chopped spinach and diced tomato for 1 minute.",
+        "Pour whisked eggs over vegetables and cook until golden on both sides."
+      ]
+    },
+    {
+      "recipe_id": "REC-004",
+      "name": "Classic Potato Curry",
+      "description": "Warm and hearty spiced potato and onion curry, perfect with rice or bread.",
+      "preparation_time_minutes": 25,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "vegan", "gluten-free"],
+      "ingredients": [
+        {"name": "Potato", "product_id": "GRC009", "quantity": 2.0, "unit": "unit", "optional": false},
+        {"name": "Onion", "product_id": "GRC010", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Tomato", "product_id": "GRC008", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Olive Oil", "product_id": "GRC035", "quantity": 15.0, "unit": "ml", "optional": true}
+      ],
+      "instructions": [
+        "Boil or cube potatoes into bite-sized pieces.",
+        "Sauté onions and tomatoes in oil until a paste forms.",
+        "Toss in potatoes with curry seasonings, simmer with water for 10 minutes until thick."
+      ]
+    },
+    {
+      "recipe_id": "REC-005",
+      "name": "Grilled Cheese Tomato Sandwich",
+      "description": "Crispy golden whole wheat sandwich with melting cheddar and fresh tomato slices.",
+      "preparation_time_minutes": 10,
+      "servings": 1,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian"],
+      "ingredients": [
+        {"name": "Whole Wheat Bread", "product_id": "GRC023", "quantity": 2.0, "unit": "unit", "optional": false},
+        {"name": "Cheddar Cheese", "product_id": "GRC017", "quantity": 50.0, "unit": "g", "optional": false},
+        {"name": "Tomato", "product_id": "GRC008", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Butter", "product_id": "GRC019", "quantity": 10.0, "unit": "g", "optional": true}
+      ],
+      "instructions": [
+        "Butter the outer sides of bread slices.",
+        "Layer sliced cheese and tomato between bread slices.",
+        "Toast on a medium-hot griddle until cheese is melted and crust is crispy."
+      ]
+    },
+    {
+      "recipe_id": "REC-006",
+      "name": "Banana Honey Oatmeal",
+      "description": "Wholesome breakfast bowl made with rolled oats, warm milk, sliced banana, and honey.",
+      "preparation_time_minutes": 10,
+      "servings": 1,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian"],
+      "ingredients": [
+        {"name": "Rolled Oats", "product_id": "GRC022", "quantity": 50.0, "unit": "g", "optional": false},
+        {"name": "Milk", "product_id": "GRC016", "quantity": 200.0, "unit": "ml", "optional": false},
+        {"name": "Banana", "product_id": "GRC002", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Honey", "product_id": "GRC036", "quantity": 15.0, "unit": "g", "optional": true}
+      ],
+      "instructions": [
+        "Cook rolled oats in simmering milk for 5 minutes until creamy.",
+        "Pour into a bowl, top with sliced bananas, and drizzle with pure honey."
+      ]
+    },
+    {
+      "recipe_id": "REC-007",
+      "name": "Fresh Fruit Salad",
+      "description": "Vibrant and refreshing bowl of sliced apples, bananas, and juicy strawberries.",
+      "preparation_time_minutes": 10,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "vegan", "raw", "gluten-free"],
+      "ingredients": [
+        {"name": "Apple", "product_id": "GRC001", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Banana", "product_id": "GRC002", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Strawberry", "product_id": "GRC003", "quantity": 100.0, "unit": "g", "optional": false},
+        {"name": "Honey", "product_id": "GRC036", "quantity": 15.0, "unit": "g", "optional": true}
+      ],
+      "instructions": [
+        "Chop apple and banana into bite-sized chunks.",
+        "Hull and slice strawberries.",
+        "Toss gently together in a serving bowl with an optional drizzle of honey."
+      ]
+    },
+    {
+      "recipe_id": "REC-008",
+      "name": "Creamy Tomato Soup",
+      "description": "Silky homemade soup prepared with ripe tomatoes, onions, butter, and a dash of milk.",
+      "preparation_time_minutes": 20,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "gluten-free"],
+      "ingredients": [
+        {"name": "Tomato", "product_id": "GRC008", "quantity": 4.0, "unit": "unit", "optional": false},
+        {"name": "Onion", "product_id": "GRC010", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Butter", "product_id": "GRC019", "quantity": 20.0, "unit": "g", "optional": false},
+        {"name": "Milk", "product_id": "GRC016", "quantity": 100.0, "unit": "ml", "optional": true}
+      ],
+      "instructions": [
+        "Sauté diced onions in melted butter until soft.",
+        "Add chopped tomatoes and simmer with water until broken down.",
+        "Blend until smooth, stir in warm milk, and season with salt and pepper."
+      ]
+    },
+    {
+      "recipe_id": "REC-009",
+      "name": "Pan-Seared Salmon with Broccoli",
+      "description": "Crisp skin-on or fillet salmon seared with garlic butter, served with steamed broccoli.",
+      "preparation_time_minutes": 20,
+      "servings": 1,
+      "difficulty": "medium",
+      "dietary_tags": ["high-protein", "keto", "gluten-free"],
+      "ingredients": [
+        {"name": "Fresh Salmon Fillet", "product_id": "GRC034", "quantity": 200.0, "unit": "g", "optional": false},
+        {"name": "Broccoli", "product_id": "GRC013", "quantity": 150.0, "unit": "g", "optional": false},
+        {"name": "Butter", "product_id": "GRC019", "quantity": 15.0, "unit": "g", "optional": false},
+        {"name": "Lemon", "product_id": "GRC006", "quantity": 1.0, "unit": "unit", "optional": true}
+      ],
+      "instructions": [
+        "Steam or blanch broccoli florets until tender-crisp.",
+        "Season salmon fillet with salt, sear in foamy butter for 4 minutes per side.",
+        "Plate salmon alongside broccoli and finish with fresh lemon juice."
+      ]
+    },
+    {
+      "recipe_id": "REC-010",
+      "name": "Chicken Spinach Stir-Fry",
+      "description": "Tender chicken breast strips wok-tossed with fresh baby spinach and bell peppers.",
+      "preparation_time_minutes": 20,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["high-protein", "gluten-free"],
+      "ingredients": [
+        {"name": "Fresh Chicken Breast", "product_id": "GRC031", "quantity": 300.0, "unit": "g", "optional": false},
+        {"name": "Spinach", "product_id": "GRC011", "quantity": 100.0, "unit": "g", "optional": false},
+        {"name": "Bell Pepper", "product_id": "GRC014", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Olive Oil", "product_id": "GRC035", "quantity": 15.0, "unit": "ml", "optional": true}
+      ],
+      "instructions": [
+        "Slice chicken breast into strips and sauté in hot oil until cooked through.",
+        "Add sliced bell pepper and cook for 2 minutes.",
+        "Toss in spinach until wilted, seasoning with salt and pepper."
+      ]
+    },
+    {
+      "recipe_id": "REC-011",
+      "name": "Tomato Pasta Bake",
+      "description": "Classic comfort dish of boiled pasta tossed in canned tomato sauce, topped with melted mozzarella.",
+      "preparation_time_minutes": 25,
+      "servings": 3,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian"],
+      "ingredients": [
+        {"name": "Dry Pasta", "product_id": "GRC024", "quantity": 250.0, "unit": "g", "optional": false},
+        {"name": "Canned Tomato Sauce", "product_id": "GRC029", "quantity": 200.0, "unit": "g", "optional": false},
+        {"name": "Mozzarella Cheese", "product_id": "GRC020", "quantity": 100.0, "unit": "g", "optional": false},
+        {"name": "Olive Oil", "product_id": "GRC035", "quantity": 10.0, "unit": "ml", "optional": true}
+      ],
+      "instructions": [
+        "Boil dry pasta in salted water until al dente.",
+        "Drain and toss pasta with rich tomato sauce in a baking dish.",
+        "Cover generously with shredded mozzarella and bake until bubbly and golden."
+      ]
+    },
+    {
+      "recipe_id": "REC-012",
+      "name": "Egg Fried Rice",
+      "description": "Quick weeknight favorite using cooked white rice, scrambled eggs, and diced onions.",
+      "preparation_time_minutes": 15,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "dairy-free"],
+      "ingredients": [
+        {"name": "White Rice", "product_id": "GRC021", "quantity": 200.0, "unit": "g", "optional": false},
+        {"name": "Eggs", "product_id": "GRC030", "quantity": 2.0, "unit": "unit", "optional": false},
+        {"name": "Onion", "product_id": "GRC010", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Olive Oil", "product_id": "GRC035", "quantity": 15.0, "unit": "ml", "optional": true}
+      ],
+      "instructions": [
+        "Scramble eggs in hot oil until just set, then remove from pan.",
+        "Sauté diced onions in remaining oil.",
+        "Add cooked rice and scramble back in, tossing on high heat."
+      ]
+    },
+    {
+      "recipe_id": "REC-013",
+      "name": "Tofu Broccoli Stir-Fry",
+      "description": "Crisp tofu cubes and broccoli tossed with onions and seasoned with olive oil.",
+      "preparation_time_minutes": 20,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "vegan", "high-protein", "gluten-free"],
+      "ingredients": [
+        {"name": "Tofu", "product_id": "GRC033", "quantity": 200.0, "unit": "g", "optional": false},
+        {"name": "Broccoli", "product_id": "GRC013", "quantity": 150.0, "unit": "g", "optional": false},
+        {"name": "Onion", "product_id": "GRC010", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Olive Oil", "product_id": "GRC035", "quantity": 15.0, "unit": "ml", "optional": true}
+      ],
+      "instructions": [
+        "Press and cube tofu, pan-frying in olive oil until golden crust forms.",
+        "Add chopped onions and broccoli florets, stir-frying on high heat.",
+        "Season with soy sauce or salt and serve hot."
+      ]
+    },
+    {
+      "recipe_id": "REC-014",
+      "name": "Berry Yogurt Parfait",
+      "description": "Creamy cultured yogurt layered with blueberries, strawberries, and honey.",
+      "preparation_time_minutes": 5,
+      "servings": 1,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "gluten-free"],
+      "ingredients": [
+        {"name": "Yogurt", "product_id": "GRC018", "quantity": 150.0, "unit": "g", "optional": false},
+        {"name": "Blueberries", "product_id": "GRC007", "quantity": 50.0, "unit": "g", "optional": false},
+        {"name": "Strawberry", "product_id": "GRC003", "quantity": 50.0, "unit": "g", "optional": false},
+        {"name": "Honey", "product_id": "GRC036", "quantity": 15.0, "unit": "g", "optional": true}
+      ],
+      "instructions": [
+        "Spoon half the yogurt into a serving glass.",
+        "Layer with fresh blueberries and sliced strawberries.",
+        "Add remaining yogurt and crown with a sweet drizzle of honey."
+      ]
+    },
+    {
+      "recipe_id": "REC-015",
+      "name": "Hearty Beef and Potato Skillet",
+      "description": "Satisfying skillet meal of seasoned ground beef browned with potatoes and onions.",
+      "preparation_time_minutes": 25,
+      "servings": 2,
+      "difficulty": "medium",
+      "dietary_tags": ["high-protein", "dairy-free", "gluten-free"],
+      "ingredients": [
+        {"name": "Ground Beef", "product_id": "GRC032", "quantity": 250.0, "unit": "g", "optional": false},
+        {"name": "Potato", "product_id": "GRC009", "quantity": 2.0, "unit": "unit", "optional": false},
+        {"name": "Onion", "product_id": "GRC010", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Olive Oil", "product_id": "GRC035", "quantity": 10.0, "unit": "ml", "optional": true}
+      ],
+      "instructions": [
+        "Brown ground beef in a skillet, breaking into crumbles, then set aside.",
+        "In the same skillet, cook parboiled diced potatoes and onions until crispy.",
+        "Return beef to the pan, toss together, and season to taste."
+      ]
+    },
+    {
+      "recipe_id": "REC-016",
+      "name": "Black Bean Rice Bowl",
+      "description": "Mexican-inspired nutrient-dense bowl of rice, canned black beans, onions, and avocado.",
+      "preparation_time_minutes": 15,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "vegan", "gluten-free"],
+      "ingredients": [
+        {"name": "White Rice", "product_id": "GRC021", "quantity": 200.0, "unit": "g", "optional": false},
+        {"name": "Canned Black Beans", "product_id": "GRC027", "quantity": 200.0, "unit": "g", "optional": false},
+        {"name": "Onion", "product_id": "GRC010", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Avocado", "product_id": "GRC005", "quantity": 1.0, "unit": "unit", "optional": true}
+      ],
+      "instructions": [
+        "Warm cooked white rice and canned black beans in separate pans.",
+        "Assemble rice in bowls and top with beans and finely chopped raw red onion.",
+        "Garnish with fresh avocado slices."
+      ]
+    },
+    {
+      "recipe_id": "REC-017",
+      "name": "Tuna Salad Lettuce Wraps",
+      "description": "Light, crisp lettuce cups filled with flaked canned tuna and diced bell peppers.",
+      "preparation_time_minutes": 10,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["high-protein", "keto", "gluten-free", "dairy-free"],
+      "ingredients": [
+        {"name": "Canned Tuna", "product_id": "GRC026", "quantity": 150.0, "unit": "g", "optional": false},
+        {"name": "Lettuce", "product_id": "GRC015", "quantity": 100.0, "unit": "g", "optional": false},
+        {"name": "Bell Pepper", "product_id": "GRC014", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Lemon", "product_id": "GRC006", "quantity": 1.0, "unit": "unit", "optional": true}
+      ],
+      "instructions": [
+        "Drain canned tuna and flake into a bowl.",
+        "Mix with finely diced bell peppers and lemon juice.",
+        "Spoon tuna mixture into large crisp lettuce leaves and serve."
+      ]
+    },
+    {
+      "recipe_id": "REC-018",
+      "name": "Peanut Butter Banana Toast",
+      "description": "Energizing quick breakfast of whole wheat toast slathered with peanut butter and banana.",
+      "preparation_time_minutes": 5,
+      "servings": 1,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "vegan"],
+      "ingredients": [
+        {"name": "Whole Wheat Bread", "product_id": "GRC023", "quantity": 2.0, "unit": "unit", "optional": false},
+        {"name": "Peanut Butter", "product_id": "GRC028", "quantity": 30.0, "unit": "g", "optional": false},
+        {"name": "Banana", "product_id": "GRC002", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Honey", "product_id": "GRC036", "quantity": 10.0, "unit": "g", "optional": true}
+      ],
+      "instructions": [
+        "Toast the slices of whole wheat bread until golden brown.",
+        "Spread thick creamy peanut butter evenly across both slices.",
+        "Top with thin banana rounds and a light drizzle of honey."
+      ]
+    },
+    {
+      "recipe_id": "REC-019",
+      "name": "Creamy Spinach Pasta",
+      "description": "Boiled pasta tossed in sautéed spinach, melted butter, and rich cheddar cheese.",
+      "preparation_time_minutes": 20,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian"],
+      "ingredients": [
+        {"name": "Dry Pasta", "product_id": "GRC024", "quantity": 200.0, "unit": "g", "optional": false},
+        {"name": "Spinach", "product_id": "GRC011", "quantity": 100.0, "unit": "g", "optional": false},
+        {"name": "Cheddar Cheese", "product_id": "GRC017", "quantity": 50.0, "unit": "g", "optional": false},
+        {"name": "Butter", "product_id": "GRC019", "quantity": 15.0, "unit": "g", "optional": false}
+      ],
+      "instructions": [
+        "Cook pasta in salted boiling water until tender; drain.",
+        "Melt butter in saucepan, wilt spinach with minced garlic.",
+        "Toss hot pasta with spinach, fold in grated cheddar until smooth and creamy."
+      ]
+    },
+    {
+      "recipe_id": "REC-020",
+      "name": "Guacamole with Fresh Veggie Dippers",
+      "description": "Creamy smashed avocado dip seasoned with tomato, onion, and lemon juice with carrot sticks.",
+      "preparation_time_minutes": 10,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "vegan", "raw", "gluten-free"],
+      "ingredients": [
+        {"name": "Avocado", "product_id": "GRC005", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Tomato", "product_id": "GRC008", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Onion", "product_id": "GRC010", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Carrot", "product_id": "GRC012", "quantity": 1.0, "unit": "unit", "optional": true},
+        {"name": "Lemon", "product_id": "GRC006", "quantity": 1.0, "unit": "unit", "optional": true}
+      ],
+      "instructions": [
+        "Scoop ripe avocado flesh into a bowl and mash with a fork.",
+        "Fold in finely diced tomato, minced onion, and a squeeze of fresh lemon juice.",
+        "Serve with fresh peeled carrot sticks for dipping."
+      ]
+    },
+    {
+      "recipe_id": "REC-021",
+      "name": "Potato Leek Style Creamy Soup",
+      "description": "Smooth vegetable soup made by simmering potatoes and onions in milk and butter.",
+      "preparation_time_minutes": 25,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "gluten-free"],
+      "ingredients": [
+        {"name": "Potato", "product_id": "GRC009", "quantity": 3.0, "unit": "unit", "optional": false},
+        {"name": "Onion", "product_id": "GRC010", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Milk", "product_id": "GRC016", "quantity": 250.0, "unit": "ml", "optional": false},
+        {"name": "Butter", "product_id": "GRC019", "quantity": 20.0, "unit": "g", "optional": true}
+      ],
+      "instructions": [
+        "Sauté chopped onions in butter until translucent.",
+        "Add peeled diced potatoes and water, boiling until potatoes are very soft.",
+        "Puree with warm milk until silky, seasoning with salt and white pepper."
+      ]
+    },
+    {
+      "recipe_id": "REC-022",
+      "name": "Banana Strawberry Smoothie",
+      "description": "Refreshing chilled fruit smoothie blending ripe banana, strawberries, and cold milk.",
+      "preparation_time_minutes": 5,
+      "servings": 1,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "gluten-free"],
+      "ingredients": [
+        {"name": "Banana", "product_id": "GRC002", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Strawberry", "product_id": "GRC003", "quantity": 100.0, "unit": "g", "optional": false},
+        {"name": "Milk", "product_id": "GRC016", "quantity": 200.0, "unit": "ml", "optional": false},
+        {"name": "Honey", "product_id": "GRC036", "quantity": 15.0, "unit": "g", "optional": true}
+      ],
+      "instructions": [
+        "Place peeled banana, hulled strawberries, and cold milk into blender.",
+        "Blend on high until frothy and smooth.",
+        "Sweeten with honey to taste and pour into a tall glass."
+      ]
+    },
+    {
+      "recipe_id": "REC-023",
+      "name": "Quick Vegetable Pasta Salad",
+      "description": "Cold pasta salad tossed with diced bell peppers, carrots, tomatoes, and olive oil.",
+      "preparation_time_minutes": 15,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "vegan"],
+      "ingredients": [
+        {"name": "Dry Pasta", "product_id": "GRC024", "quantity": 150.0, "unit": "g", "optional": false},
+        {"name": "Bell Pepper", "product_id": "GRC014", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Carrot", "product_id": "GRC012", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Tomato", "product_id": "GRC008", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Olive Oil", "product_id": "GRC035", "quantity": 20.0, "unit": "ml", "optional": true}
+      ],
+      "instructions": [
+        "Cook pasta, drain, rinse with cold water, and let cool.",
+        "Finely dice bell pepper, carrot, and tomato.",
+        "Toss everything in a salad bowl with olive oil, salt, and herbs."
+      ]
+    },
+    {
+      "recipe_id": "REC-024",
+      "name": "Simple Pan-Roasted Potatoes",
+      "description": "Crispy pan-fried potato cubes with onions in golden butter.",
+      "preparation_time_minutes": 20,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "gluten-free"],
+      "ingredients": [
+        {"name": "Potato", "product_id": "GRC009", "quantity": 2.0, "unit": "unit", "optional": false},
+        {"name": "Onion", "product_id": "GRC010", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Butter", "product_id": "GRC019", "quantity": 25.0, "unit": "g", "optional": false}
+      ],
+      "instructions": [
+        "Cut potatoes into small cubes and microwave or parboil for 4 minutes.",
+        "Melt butter in skillet, add potatoes and sliced onions.",
+        "Fry undisturbed until bottoms are golden and crispy, then flip and crisp other side."
+      ]
+    },
+    {
+      "recipe_id": "REC-025",
+      "name": "Yogurt Potato Raita",
+      "description": "Traditional cooling spiced yogurt side with boiled potato cubes and fresh lemon.",
+      "preparation_time_minutes": 10,
+      "servings": 2,
+      "difficulty": "easy",
+      "dietary_tags": ["vegetarian", "gluten-free"],
+      "ingredients": [
+        {"name": "Yogurt", "product_id": "GRC018", "quantity": 200.0, "unit": "g", "optional": false},
+        {"name": "Potato", "product_id": "GRC009", "quantity": 1.0, "unit": "unit", "optional": false},
+        {"name": "Lemon", "product_id": "GRC006", "quantity": 1.0, "unit": "unit", "optional": true}
+      ],
+      "instructions": [
+        "Whisk fresh yogurt until smooth.",
+        "Fold in diced boiled potatoes, roasted cumin, and salt.",
+        "Add a dash of fresh lemon juice and serve chilled."
+      ]
+    }
+  ]
+}

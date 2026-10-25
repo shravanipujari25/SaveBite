@@ -1,0 +1,1104 @@
+{
+  "dataset_name": "Fruit Freshness Detection Dataset",
+  "source": "https://github.com/zijianchen98/Fruit-freshness-detection-dataset",
+  "license": "Apache License 2.0",
+  "acquired_at": "2026-10-24T19:21:02Z",
+  "total_samples": 135,
+  "condition_counts": {
+    "fresh": 45,
+    "ripe": 45,
+    "visibly_spoiled": 45
+  },
+  "supported_categories": [
+    "apple",
+    "banana",
+    "orange"
+  ],
+  "condition_classes": [
+    "fresh",
+    "ripe",
+    "visibly_spoiled"
+  ],
+  "samples": [
+    {
+      "sample_id": "2971",
+      "image_filename": "2971.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 79029
+    },
+    {
+      "sample_id": "2564",
+      "image_filename": "2564.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 84356
+    },
+    {
+      "sample_id": "2856",
+      "image_filename": "2856.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 57686
+    },
+    {
+      "sample_id": "1063",
+      "image_filename": "1063.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 22379
+    },
+    {
+      "sample_id": "2854",
+      "image_filename": "2854.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 57168
+    },
+    {
+      "sample_id": "294",
+      "image_filename": "294.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 34101
+    },
+    {
+      "sample_id": "782",
+      "image_filename": "782.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 64576
+    },
+    {
+      "sample_id": "118",
+      "image_filename": "118.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 28045
+    },
+    {
+      "sample_id": "464",
+      "image_filename": "464.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 51698
+    },
+    {
+      "sample_id": "2393",
+      "image_filename": "2393.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 87123
+    },
+    {
+      "sample_id": "1038",
+      "image_filename": "1038.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 37309
+    },
+    {
+      "sample_id": "2898",
+      "image_filename": "2898.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 50507
+    },
+    {
+      "sample_id": "306",
+      "image_filename": "306.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 34637
+    },
+    {
+      "sample_id": "420",
+      "image_filename": "420.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 51396
+    },
+    {
+      "sample_id": "2446",
+      "image_filename": "2446.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 86279
+    },
+    {
+      "sample_id": "168",
+      "image_filename": "168.jpg",
+      "product_category": "banana",
+      "raw_label": "fresh_banana",
+      "condition": "fresh",
+      "file_size_bytes": 22985
+    },
+    {
+      "sample_id": "2546",
+      "image_filename": "2546.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 76426
+    },
+    {
+      "sample_id": "387",
+      "image_filename": "387.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 40219
+    },
+    {
+      "sample_id": "2387",
+      "image_filename": "2387.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 86648
+    },
+    {
+      "sample_id": "2524",
+      "image_filename": "2524.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 89349
+    },
+    {
+      "sample_id": "2800",
+      "image_filename": "2800.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 73942
+    },
+    {
+      "sample_id": "2722",
+      "image_filename": "2722.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 79512
+    },
+    {
+      "sample_id": "2351",
+      "image_filename": "2351.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 86792
+    },
+    {
+      "sample_id": "606",
+      "image_filename": "606.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 27944
+    },
+    {
+      "sample_id": "2618",
+      "image_filename": "2618.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 83204
+    },
+    {
+      "sample_id": "1353",
+      "image_filename": "1353.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 40064
+    },
+    {
+      "sample_id": "1814",
+      "image_filename": "1814.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 35224
+    },
+    {
+      "sample_id": "242",
+      "image_filename": "242.jpg",
+      "product_category": "banana",
+      "raw_label": "fresh_banana",
+      "condition": "fresh",
+      "file_size_bytes": 20279
+    },
+    {
+      "sample_id": "175",
+      "image_filename": "175.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 37986
+    },
+    {
+      "sample_id": "2725",
+      "image_filename": "2725.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 75634
+    },
+    {
+      "sample_id": "2746",
+      "image_filename": "2746.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 84383
+    },
+    {
+      "sample_id": "2255",
+      "image_filename": "2255.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 88235
+    },
+    {
+      "sample_id": "1336",
+      "image_filename": "1336.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 39899
+    },
+    {
+      "sample_id": "1742",
+      "image_filename": "1742.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 41688
+    },
+    {
+      "sample_id": "1476",
+      "image_filename": "1476.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 30106
+    },
+    {
+      "sample_id": "824",
+      "image_filename": "824.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 65556
+    },
+    {
+      "sample_id": "969",
+      "image_filename": "969.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 63594
+    },
+    {
+      "sample_id": "1893",
+      "image_filename": "1893.jpg",
+      "product_category": "banana",
+      "raw_label": "fresh_banana",
+      "condition": "fresh",
+      "file_size_bytes": 34054
+    },
+    {
+      "sample_id": "234",
+      "image_filename": "234.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 30355
+    },
+    {
+      "sample_id": "2751",
+      "image_filename": "2751.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 77394
+    },
+    {
+      "sample_id": "1824",
+      "image_filename": "1824.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 34434
+    },
+    {
+      "sample_id": "1056",
+      "image_filename": "1056.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 31416
+    },
+    {
+      "sample_id": "329",
+      "image_filename": "329.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 25240
+    },
+    {
+      "sample_id": "728",
+      "image_filename": "728.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 30815
+    },
+    {
+      "sample_id": "622",
+      "image_filename": "622.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 49271
+    },
+    {
+      "sample_id": "1910",
+      "image_filename": "1910.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 34322
+    },
+    {
+      "sample_id": "1926",
+      "image_filename": "1926.jpg",
+      "product_category": "banana",
+      "raw_label": "fresh_banana",
+      "condition": "fresh",
+      "file_size_bytes": 34838
+    },
+    {
+      "sample_id": "218",
+      "image_filename": "218.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 22194
+    },
+    {
+      "sample_id": "3043",
+      "image_filename": "3043.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 71185
+    },
+    {
+      "sample_id": "1286",
+      "image_filename": "1286.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 40783
+    },
+    {
+      "sample_id": "569",
+      "image_filename": "569.jpg",
+      "product_category": "apple",
+      "raw_label": "rotten_apple",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 52600
+    },
+    {
+      "sample_id": "501",
+      "image_filename": "501.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 48047
+    },
+    {
+      "sample_id": "2439",
+      "image_filename": "2439.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 88630
+    },
+    {
+      "sample_id": "1706",
+      "image_filename": "1706.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 38657
+    },
+    {
+      "sample_id": "1084",
+      "image_filename": "1084.jpg",
+      "product_category": "banana",
+      "raw_label": "fresh_banana",
+      "condition": "fresh",
+      "file_size_bytes": 16863
+    },
+    {
+      "sample_id": "1741",
+      "image_filename": "1741.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 41279
+    },
+    {
+      "sample_id": "1552",
+      "image_filename": "1552.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 30407
+    },
+    {
+      "sample_id": "1867",
+      "image_filename": "1867.jpg",
+      "product_category": "banana",
+      "raw_label": "fresh_banana",
+      "condition": "fresh",
+      "file_size_bytes": 32195
+    },
+    {
+      "sample_id": "277",
+      "image_filename": "277.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 36270
+    },
+    {
+      "sample_id": "954",
+      "image_filename": "954.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 66159
+    },
+    {
+      "sample_id": "47",
+      "image_filename": "47.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 41835
+    },
+    {
+      "sample_id": "2081",
+      "image_filename": "2081.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 91799
+    },
+    {
+      "sample_id": "2826",
+      "image_filename": "2826.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 66777
+    },
+    {
+      "sample_id": "1716",
+      "image_filename": "1716.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 42478
+    },
+    {
+      "sample_id": "2069",
+      "image_filename": "2069.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 80608
+    },
+    {
+      "sample_id": "2978",
+      "image_filename": "2978.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 71640
+    },
+    {
+      "sample_id": "3046",
+      "image_filename": "3046.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 61970
+    },
+    {
+      "sample_id": "638",
+      "image_filename": "638.jpg",
+      "product_category": "apple",
+      "raw_label": "rotten_apple",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 33015
+    },
+    {
+      "sample_id": "1872",
+      "image_filename": "1872.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 32270
+    },
+    {
+      "sample_id": "1556",
+      "image_filename": "1556.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 26711
+    },
+    {
+      "sample_id": "238",
+      "image_filename": "238.jpg",
+      "product_category": "banana",
+      "raw_label": "fresh_banana",
+      "condition": "fresh",
+      "file_size_bytes": 22041
+    },
+    {
+      "sample_id": "543",
+      "image_filename": "543.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 48132
+    },
+    {
+      "sample_id": "269",
+      "image_filename": "269.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 26424
+    },
+    {
+      "sample_id": "2653",
+      "image_filename": "2653.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 86826
+    },
+    {
+      "sample_id": "3130",
+      "image_filename": "3130.jpg",
+      "product_category": "banana",
+      "raw_label": "fresh_banana",
+      "condition": "fresh",
+      "file_size_bytes": 58296
+    },
+    {
+      "sample_id": "321",
+      "image_filename": "321.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 43247
+    },
+    {
+      "sample_id": "2399",
+      "image_filename": "2399.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 87703
+    },
+    {
+      "sample_id": "542",
+      "image_filename": "542.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 31121
+    },
+    {
+      "sample_id": "240",
+      "image_filename": "240.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 30837
+    },
+    {
+      "sample_id": "1884",
+      "image_filename": "1884.jpg",
+      "product_category": "banana",
+      "raw_label": "fresh_banana",
+      "condition": "fresh",
+      "file_size_bytes": 33025
+    },
+    {
+      "sample_id": "374",
+      "image_filename": "374.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 25930
+    },
+    {
+      "sample_id": "613",
+      "image_filename": "613.jpg",
+      "product_category": "apple",
+      "raw_label": "rotten_apple",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 32936
+    },
+    {
+      "sample_id": "493",
+      "image_filename": "493.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 27017
+    },
+    {
+      "sample_id": "13",
+      "image_filename": "13.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 30537
+    },
+    {
+      "sample_id": "2859",
+      "image_filename": "2859.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 66657
+    },
+    {
+      "sample_id": "891",
+      "image_filename": "891.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 66422
+    },
+    {
+      "sample_id": "2892",
+      "image_filename": "2892.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 65850
+    },
+    {
+      "sample_id": "669",
+      "image_filename": "669.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 98659
+    },
+    {
+      "sample_id": "1614",
+      "image_filename": "1614.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 38360
+    },
+    {
+      "sample_id": "3155",
+      "image_filename": "3155.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 58364
+    },
+    {
+      "sample_id": "1496",
+      "image_filename": "1496.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 57011
+    },
+    {
+      "sample_id": "2996",
+      "image_filename": "2996.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 79386
+    },
+    {
+      "sample_id": "2008",
+      "image_filename": "2008.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 75386
+    },
+    {
+      "sample_id": "182",
+      "image_filename": "182.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 48195
+    },
+    {
+      "sample_id": "3016",
+      "image_filename": "3016.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 75251
+    },
+    {
+      "sample_id": "1484",
+      "image_filename": "1484.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 29796
+    },
+    {
+      "sample_id": "597",
+      "image_filename": "597.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 38471
+    },
+    {
+      "sample_id": "1658",
+      "image_filename": "1658.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 26436
+    },
+    {
+      "sample_id": "2993",
+      "image_filename": "2993.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 84172
+    },
+    {
+      "sample_id": "2346",
+      "image_filename": "2346.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 86699
+    },
+    {
+      "sample_id": "314",
+      "image_filename": "314.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 26287
+    },
+    {
+      "sample_id": "3040",
+      "image_filename": "3040.jpg",
+      "product_category": "orange",
+      "raw_label": "fresh_orange",
+      "condition": "fresh",
+      "file_size_bytes": 75649
+    },
+    {
+      "sample_id": "2951",
+      "image_filename": "2951.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 81261
+    },
+    {
+      "sample_id": "2492",
+      "image_filename": "2492.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 96912
+    },
+    {
+      "sample_id": "1",
+      "image_filename": "1.jpg",
+      "product_category": "apple",
+      "raw_label": "fresh_apple",
+      "condition": "fresh",
+      "file_size_bytes": 57520
+    },
+    {
+      "sample_id": "2356",
+      "image_filename": "2356.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 86666
+    },
+    {
+      "sample_id": "2303",
+      "image_filename": "2303.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 86567
+    },
+    {
+      "sample_id": "495",
+      "image_filename": "495.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 77110
+    },
+    {
+      "sample_id": "989",
+      "image_filename": "989.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 60273
+    },
+    {
+      "sample_id": "135",
+      "image_filename": "135.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 42328
+    },
+    {
+      "sample_id": "2935",
+      "image_filename": "2935.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 66930
+    },
+    {
+      "sample_id": "2462",
+      "image_filename": "2462.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 82079
+    },
+    {
+      "sample_id": "1306",
+      "image_filename": "1306.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 30294
+    },
+    {
+      "sample_id": "2860",
+      "image_filename": "2860.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 62339
+    },
+    {
+      "sample_id": "2350",
+      "image_filename": "2350.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 86693
+    },
+    {
+      "sample_id": "2320",
+      "image_filename": "2320.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 87916
+    },
+    {
+      "sample_id": "2443",
+      "image_filename": "2443.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 86303
+    },
+    {
+      "sample_id": "2611",
+      "image_filename": "2611.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 83198
+    },
+    {
+      "sample_id": "700",
+      "image_filename": "700.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 42128
+    },
+    {
+      "sample_id": "2840",
+      "image_filename": "2840.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 67320
+    },
+    {
+      "sample_id": "1048",
+      "image_filename": "1048.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 27582
+    },
+    {
+      "sample_id": "2536",
+      "image_filename": "2536.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 90417
+    },
+    {
+      "sample_id": "462",
+      "image_filename": "462.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 26034
+    },
+    {
+      "sample_id": "979",
+      "image_filename": "979.jpg",
+      "product_category": "orange",
+      "raw_label": "normal_orange",
+      "condition": "ripe",
+      "file_size_bytes": 65547
+    },
+    {
+      "sample_id": "2319",
+      "image_filename": "2319.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 88614
+    },
+    {
+      "sample_id": "1836",
+      "image_filename": "1836.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 33519
+    },
+    {
+      "sample_id": "2939",
+      "image_filename": "2939.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 76458
+    },
+    {
+      "sample_id": "2300",
+      "image_filename": "2300.jpg",
+      "product_category": "banana",
+      "raw_label": "normal_banana",
+      "condition": "ripe",
+      "file_size_bytes": 88045
+    },
+    {
+      "sample_id": "2395",
+      "image_filename": "2395.jpg",
+      "product_category": "apple",
+      "raw_label": "normal_apple",
+      "condition": "ripe",
+      "file_size_bytes": 87408
+    },
+    {
+      "sample_id": "1191",
+      "image_filename": "1191.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 42201
+    },
+    {
+      "sample_id": "467",
+      "image_filename": "467.jpg",
+      "product_category": "banana",
+      "raw_label": "rotten_banana",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 20600
+    },
+    {
+      "sample_id": "1365",
+      "image_filename": "1365.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 48179
+    },
+    {
+      "sample_id": "1327",
+      "image_filename": "1327.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 46100
+    },
+    {
+      "sample_id": "1329",
+      "image_filename": "1329.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 52041
+    },
+    {
+      "sample_id": "1192",
+      "image_filename": "1192.jpg",
+      "product_category": "orange",
+      "raw_label": "rotten_orange",
+      "condition": "visibly_spoiled",
+      "file_size_bytes": 39676
+    }
+  ]
+}

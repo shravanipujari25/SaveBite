@@ -1,0 +1,60 @@
+{
+  "model_version": "savebite-freshness-v1.0.0",
+  "architecture": "MLP",
+  "evaluation_timestamp": "2026-10-24T19:22:54Z",
+  "dataset_split": {
+    "total_samples": 135,
+    "train_samples": 93,
+    "val_samples": 21,
+    "test_samples": 21,
+    "split_ratio": "70% / 15% / 15%",
+    "random_seed": 42
+  },
+  "held_out_test_metrics": {
+    "accuracy": 0.8095,
+    "macro_f1": 0.8125,
+    "weighted_f1": 0.8125,
+    "confusion_matrix": [
+      [
+        5,
+        0,
+        2
+      ],
+      [
+        1,
+        6,
+        0
+      ],
+      [
+        1,
+        0,
+        6
+      ]
+    ],
+    "classes": [
+      "fresh",
+      "ripe",
+      "visibly_spoiled"
+    ],
+    "per_class": {
+      "fresh": {
+        "precision": 0.7143,
+        "recall": 0.7143,
+        "f1_score": 0.7143,
+        "support": 7
+      },
+      "ripe": {
+        "precision": 1.0,
+        "recall": 0.8571,
+        "f1_score": 0.9231,
+        "support": 7
+      },
+      "visibly_spoiled": {
+        "precision": 0.75,
+        "recall": 0.8571,
+        "f1_score": 0.8,
+        "support": 7
+      }
+    }
+  }
+}

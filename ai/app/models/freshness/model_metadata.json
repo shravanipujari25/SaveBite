@@ -1,0 +1,74 @@
+{
+  "model_name": "SaveBite Fruit Freshness Classifier",
+  "model_version": "savebite-freshness-v1.0.0",
+  "model_type": "MLP",
+  "classes": [
+    "fresh",
+    "ripe",
+    "visibly_spoiled"
+  ],
+  "class_to_idx": {
+    "fresh": 0,
+    "ripe": 1,
+    "visibly_spoiled": 2
+  },
+  "feature_dim": 34,
+  "confidence_threshold_reliable": 0.6,
+  "supported_fruits": [
+    "apple",
+    "banana",
+    "orange"
+  ],
+  "dataset_info": {
+    "name": "Fruit Freshness Detection Dataset",
+    "source": "https://github.com/zijianchen98/Fruit-freshness-detection-dataset",
+    "license": "Apache License 2.0"
+  },
+  "performance_summary": {
+    "accuracy": 0.8095,
+    "macro_f1": 0.8125,
+    "weighted_f1": 0.8125,
+    "confusion_matrix": [
+      [
+        5,
+        0,
+        2
+      ],
+      [
+        1,
+        6,
+        0
+      ],
+      [
+        1,
+        0,
+        6
+      ]
+    ],
+    "classes": [
+      "fresh",
+      "ripe",
+      "visibly_spoiled"
+    ],
+    "per_class": {
+      "fresh": {
+        "precision": 0.7143,
+        "recall": 0.7143,
+        "f1_score": 0.7143,
+        "support": 7
+      },
+      "ripe": {
+        "precision": 1.0,
+        "recall": 0.8571,
+        "f1_score": 0.9231,
+        "support": 7
+      },
+      "visibly_spoiled": {
+        "precision": 0.75,
+        "recall": 0.8571,
+        "f1_score": 0.8,
+        "support": 7
+      }
+    }
+  }
+}

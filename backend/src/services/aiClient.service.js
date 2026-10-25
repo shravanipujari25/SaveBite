@@ -42,29 +42,96 @@ const aiShelfLifeResponseSchema = z.object({
   risk_factors: z.array(z.string()).optional()
 });
 
-const aiUseFirstResponseSchema = z.object({
-  scores: z.array(z.object({
-    item_id: z.string(),
-    use_first_score: z.number().min(0).max(100),
-    freshness_bucket: z.enum(['fresh', 'use_soon', 'critical', 'expired']).default('fresh'),
-    recommendation: z.string().optional().nullable()
+// Priority categories returned by POST /priority/score
+const AI_PRIORITY_CATEGORIES = ['Red', 'Orange', 'Yellow', 'Green', 'Black'];
+
+const aiScoredItemSchema = z.object({
+  item_id: z.string(),
+  product_name: z.string(),
+  product_found: z.boolean(),
+  rank: z.number().int(),
+  score: z.number().min(0).max(100).nullable().optional(),
+  priority_category: z.enum(['Red', 'Orange', 'Yellow', 'Green', 'Black']),
+  estimated_remaining_days: z.number().int().nullable().optional(),
+  reference_shelf_life_days: z.number().int().nullable().optional(),
+  urgency_ratio: z.number().nullable().optional(),
+  warnings: z.array(z.string()).default([]),
+  explanation: z.string().optional(),
+  shelf_life_reliability: z.string().nullable().optional(),
+  unavailability_reason: z.string().nullable().optional()
+});
+
+const aiPriorityScoreResponseSchema = z.object({
+  as_of_date: z.string().or(z.any()),
+  total_items: z.number().int(),
+  scored_items: z.array(aiScoredItemSchema)
+});
+
+const aiRecipeRecommendationResponseSchema = z.object({
+  as_of_date: z.string().or(z.any()).optional(),
+  total_recipes_evaluated: z.number().int().optional(),
+  total_recommendations: z.number().int().optional(),
+  recommendations: z.array(z.object({
+    recipe_id: z.string(),
+    name: z.string().min(1),
+    rank: z.number().int().optional(),
+    score: z.number().optional(),
+    score_breakdown: z.object({
+      ingredient_availability: z.number().optional(),
+      near_expiry_utilization: z.number().optional(),
+      use_first_utilization: z.number().optional(),
+      missing_ingredient_component: z.number().optional()
+    }).optional(),
+    preparation_status: z.string().optional(),
+    matched_ingredients: z.array(z.object({
+      ingredient_name: z.string(),
+      product_id: z.string().nullable().optional(),
+      required_quantity: z.number(),
+      required_unit: z.string(),
+      available_quantity: z.number().nullable().optional(),
+      available_unit: z.string().nullable().optional(),
+      missing_quantity: z.number().nullable().optional(),
+      status: z.string(),
+      optional: z.boolean(),
+      near_expiry: z.boolean().optional(),
+      priority_category: z.string().nullable().optional(),
+      matched_inventory_ids: z.array(z.string()).optional().default([])
+    })).optional().default([]),
+    use_first_ingredients: z.array(z.string()).optional().default([]),
+    near_expiry_ingredients: z.array(z.string()).optional().default([]),
+    missing_ingredients: z.array(z.string()).optional().default([]),
+    insufficient_ingredients: z.array(z.string()).optional().default([]),
+    unavailable_ingredients: z.array(z.string()).optional().default([]),
+    optional_missing_ingredients: z.array(z.string()).optional().default([]),
+    reasons: z.array(z.string()).optional().default([]),
+    preparation_time_minutes: z.number().int().optional().default(20),
+    servings: z.number().int().optional().default(2),
+    instructions: z.array(z.string()).optional().default([]),
+    simulated: z.boolean().optional()
   }))
 });
 
-const aiRecipeRescueResponseSchema = z.object({
-  recipes: z.array(z.object({
-    id: z.string().optional(),
-    title: z.string().min(1),
-    description: z.string().optional().nullable(),
-    prep_time_minutes: z.number().optional().nullable(),
-    cook_time_minutes: z.number().optional().nullable(),
-    servings: z.number().optional().nullable(),
-    ingredients: z.array(z.union([z.string(), z.object({ name: z.string(), quantity: z.string().optional().nullable() })])),
-    instructions: z.array(z.string()),
-    rescued_ingredients: z.array(z.string()).default([]),
-    waste_reduction_score: z.number().optional().nullable()
-  }))
-});
+// Backward compatibility schema for raw recipes array or object
+const aiRecipeRescueResponseSchema = z.union([
+  aiRecipeRecommendationResponseSchema,
+  z.object({
+    recipes: z.array(z.object({
+      id: z.string().optional(),
+      recipe_id: z.string().optional(),
+      title: z.string().optional(),
+      name: z.string().optional(),
+      description: z.string().optional().nullable(),
+      prep_time_minutes: z.number().optional().nullable(),
+      preparation_time_minutes: z.number().optional().nullable(),
+      cook_time_minutes: z.number().optional().nullable(),
+      servings: z.number().optional().nullable(),
+      ingredients: z.array(z.union([z.string(), z.object({ name: z.string(), quantity: z.any().optional().nullable() })])).optional(),
+      instructions: z.array(z.string()).optional(),
+      rescued_ingredients: z.array(z.string()).default([]),
+      waste_reduction_score: z.number().optional().nullable()
+    }))
+  })
+]);
 
 const aiAssistantChatResponseSchema = z.object({
   reply: z.string().min(1),
@@ -272,19 +339,20 @@ export class AIClientService {
   }
 
   /**
-   * Request Use-First scoring for multiple inventory items.
+   * Request Use-First priority scoring for multiple inventory items.
+   * Calls the actual AI endpoint: POST /priority/score
    *
-   * @param {object[]} items
-   * @returns {Promise<{ scores: Array<{ item_id: string, use_first_score: number, freshness_bucket: string, recommendation?: string }> }>}
+   * @param {object[]} items - Array of GroceryItem-shaped objects
+   * @returns {Promise<{ as_of_date: string, total_items: number, scored_items: Array<ScoredItem> }>}
    */
   async scoreUseFirst(items) {
-    const rawData = await this._post('/use-first/score', { items });
+    const rawData = await this._post('/priority/score', { items });
 
-    const validation = aiUseFirstResponseSchema.safeParse(rawData);
+    const validation = aiPriorityScoreResponseSchema.safeParse(rawData);
     if (!validation.success) {
-      logger.error({ errors: validation.error.issues, rawData }, 'Invalid response schema from AI use-first scoring service');
+      logger.error({ errors: validation.error.issues, rawData }, 'Invalid response schema from AI priority scoring service');
       throw new AppError(
-        'Invalid response format received from AI Use-First service',
+        'Invalid response format received from AI priority/score service',
         502,
         'AI_MALFORMED_RESPONSE',
         validation.error.issues
@@ -295,21 +363,39 @@ export class AIClientService {
   }
 
   /**
-   * Request recipe rescue suggestions based on at-risk ingredients.
+   * Request recipe recommendations based on household inventory.
+   * Calls the actual AI endpoint: POST /recipes/recommend
    *
-   * @param {object[]} ingredients
-   * @param {string[]} [dietaryPreferences=[]]
-   * @returns {Promise<{ recipes: object[] }>}
+   * @param {object|object[]} params - Either an object with { inventory, priority_data, limit, as_of_date } or an array of inventory items
+   * @param {string[]} [dietaryPreferences=[]] - Optional dietary preferences
+   * @returns {Promise<object>}
    */
-  async rescueRecipes(ingredients, dietaryPreferences = []) {
-    const rawData = await this._post('/recipes/rescue', {
-      ingredients,
-      dietary_preferences: dietaryPreferences
-    });
+  async rescueRecipes(params, dietaryPreferences = []) {
+    let payload;
+    if (params && Array.isArray(params)) {
+      payload = {
+        inventory: params,
+        limit: 10
+      };
+    } else if (params && typeof params === 'object' && Array.isArray(params.inventory)) {
+      payload = {
+        inventory: params.inventory,
+        priority_data: params.priority_data || null,
+        limit: params.limit || 10,
+        as_of_date: params.as_of_date || null
+      };
+    } else {
+      payload = {
+        inventory: [],
+        limit: 10
+      };
+    }
+
+    const rawData = await this._post('/recipes/recommend', payload);
 
     const validation = aiRecipeRescueResponseSchema.safeParse(rawData);
     if (!validation.success) {
-      logger.error({ errors: validation.error.issues, rawData }, 'Invalid response schema from AI recipe rescue service');
+      logger.error({ errors: validation.error.issues, rawData }, 'Invalid response schema from AI recipe recommendation service');
       throw new AppError(
         'Invalid response format received from AI recipe rescue service',
         502,

@@ -5,6 +5,7 @@ import NotificationBell from './NotificationBell'
 import UserProfileMenu from './UserProfileMenu'
 import Button from '../common/Button'
 import { api } from '../../api/client'
+import logoImg from '../../assets/logo.png'
 
 const routeTitles = {
   '/dashboard': 'Pantry Overview',
@@ -14,7 +15,7 @@ const routeTitles = {
   '/recipes': 'Waste-Less Kitchen',
   '/shopping-list': 'Smart Shopping List',
   '/analytics': 'Food Waste Insights',
-  '/assistant': 'SaveBite AI Assistant',
+  '/assistant': 'SaveBite Help Assistant',
   '/profile': 'Household Profile',
   '/settings': 'System Settings',
 }
@@ -28,7 +29,9 @@ export function TopHeader() {
       {/* Mobile brand & title */}
       <div className="flex items-center gap-3">
         <Link to="/dashboard" className="md:hidden flex items-center gap-2">
-          <span className="text-2xl" role="img" aria-label="SaveBite Avocado">🥑</span>
+          <div className="w-8 h-8 rounded-xl bg-white border border-emerald-100 p-0.5 flex items-center justify-center shadow-xs overflow-hidden">
+            <img src={logoImg} alt="SaveBite Logo" className="w-full h-full object-contain" />
+          </div>
           <span className="font-extrabold text-base tracking-tight text-emerald-900">SaveBite</span>
         </Link>
         <div className="hidden md:block">

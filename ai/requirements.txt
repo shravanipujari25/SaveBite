@@ -1,0 +1,21 @@
+# SaveBite AI Service - Direct Dependencies
+# Core web framework and ASGI server
+fastapi==0.162.0
+uvicorn==0.54.0
+
+# Data validation and settings
+pydantic==2.14.1
+
+# Data processing and machine learning foundation
+pandas==3.1.0
+scikit-learn==1.9.1
+
+# Automated testing
+pytest==9.1.1
+
+# Test client dependency (required by starlette / fastapi.testclient.TestClient)
+httpx==0.28.1
+
+# Image processing and multipart upload handling
+pillow>=10.0.0
+python-multipart>=0.0.9

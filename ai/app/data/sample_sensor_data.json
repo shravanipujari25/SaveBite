@@ -1,0 +1,351 @@
+{
+  "_comment": "Synthetic IoT Sensor Dataset for SaveBite AI Phase 5. All records are explicitly simulated.",
+  "dataset_metadata": {
+    "source": "SaveBite Synthetic IoT Sensor Generator",
+    "version": "1.0.0",
+    "generated_for": "Phase 5 Synthetic IoT Sensor Intelligence",
+    "simulated": true,
+    "description": "Deterministic synthetic sensor readings covering normal conditions, temperature/humidity anomalies, sustained deviations, sudden changes, door-open persistence, power interruptions, stale readings, and malformed inputs."
+  },
+  "readings": [
+    {
+      "reading_id": "SIM-REF-001",
+      "sensor_id": "SIM-SENSOR-REF-01",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T08:00:00Z",
+      "temperature_c": 3.2,
+      "humidity_percent": 65.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-002",
+      "sensor_id": "SIM-SENSOR-REF-01",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T08:15:00Z",
+      "temperature_c": 3.5,
+      "humidity_percent": 64.5,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-003",
+      "sensor_id": "SIM-SENSOR-REF-01",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T08:30:00Z",
+      "temperature_c": 3.8,
+      "humidity_percent": 66.0,
+      "door_open": true,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-004",
+      "sensor_id": "SIM-SENSOR-REF-01",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T08:45:00Z",
+      "temperature_c": 3.4,
+      "humidity_percent": 65.2,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-005",
+      "sensor_id": "SIM-SENSOR-REF-01",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T09:00:00Z",
+      "temperature_c": 6.8,
+      "humidity_percent": 68.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-006",
+      "sensor_id": "SIM-SENSOR-REF-01",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T09:15:00Z",
+      "temperature_c": 7.5,
+      "humidity_percent": 70.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-007",
+      "sensor_id": "SIM-SENSOR-REF-01",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T09:30:00Z",
+      "temperature_c": 7.2,
+      "humidity_percent": 71.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-008",
+      "sensor_id": "SIM-SENSOR-REF-01",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T09:45:00Z",
+      "temperature_c": 3.5,
+      "humidity_percent": 65.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-009",
+      "sensor_id": "SIM-SENSOR-REF-02",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T10:00:00Z",
+      "temperature_c": -1.2,
+      "humidity_percent": 60.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-010",
+      "sensor_id": "SIM-SENSOR-REF-02",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T10:15:00Z",
+      "temperature_c": 3.0,
+      "humidity_percent": 92.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-011",
+      "sensor_id": "SIM-SENSOR-REF-02",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T10:30:00Z",
+      "temperature_c": 3.1,
+      "humidity_percent": 38.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-012",
+      "sensor_id": "SIM-SENSOR-REF-03",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T11:00:00Z",
+      "temperature_c": 4.0,
+      "humidity_percent": 65.0,
+      "door_open": true,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-013",
+      "sensor_id": "SIM-SENSOR-REF-03",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T11:15:00Z",
+      "temperature_c": 5.2,
+      "humidity_percent": 68.0,
+      "door_open": true,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-014",
+      "sensor_id": "SIM-SENSOR-REF-03",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T11:30:00Z",
+      "temperature_c": 6.8,
+      "humidity_percent": 72.0,
+      "door_open": true,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-REF-015",
+      "sensor_id": "SIM-SENSOR-REF-03",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T11:45:00Z",
+      "temperature_c": 4.5,
+      "humidity_percent": 66.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-FRZ-001",
+      "sensor_id": "SIM-SENSOR-FRZ-01",
+      "storage_zone": "freezer",
+      "timestamp": "2026-10-24T08:00:00Z",
+      "temperature_c": -20.5,
+      "humidity_percent": 75.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-FRZ-002",
+      "sensor_id": "SIM-SENSOR-FRZ-01",
+      "storage_zone": "freezer",
+      "timestamp": "2026-10-24T08:15:00Z",
+      "temperature_c": -12.0,
+      "humidity_percent": 80.0,
+      "door_open": false,
+      "power_cut_hours": 2.5,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-FRZ-003",
+      "sensor_id": "SIM-SENSOR-FRZ-01",
+      "storage_zone": "freezer",
+      "timestamp": "2026-10-24T08:30:00Z",
+      "temperature_c": -10.5,
+      "humidity_percent": 82.0,
+      "door_open": false,
+      "power_cut_hours": 2.75,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-FRZ-004",
+      "sensor_id": "SIM-SENSOR-FRZ-01",
+      "storage_zone": "freezer",
+      "timestamp": "2026-10-24T08:45:00Z",
+      "temperature_c": -9.8,
+      "humidity_percent": 85.0,
+      "door_open": false,
+      "power_cut_hours": 3.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-PAN-001",
+      "sensor_id": "SIM-SENSOR-PAN-01",
+      "storage_zone": "pantry",
+      "timestamp": "2026-10-24T08:00:00Z",
+      "temperature_c": 19.5,
+      "humidity_percent": 50.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-PAN-002",
+      "sensor_id": "SIM-SENSOR-PAN-01",
+      "storage_zone": "pantry",
+      "timestamp": "2026-10-24T08:15:00Z",
+      "temperature_c": 27.5,
+      "humidity_percent": 55.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-PAN-003",
+      "sensor_id": "SIM-SENSOR-PAN-01",
+      "storage_zone": "pantry",
+      "timestamp": "2026-10-24T08:30:00Z",
+      "temperature_c": 32.0,
+      "humidity_percent": 75.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-PAN-004",
+      "sensor_id": "SIM-SENSOR-PAN-02",
+      "storage_zone": "pantry",
+      "timestamp": "2026-10-24T08:00:00Z",
+      "temperature_c": 8.0,
+      "humidity_percent": 45.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-PAN-005",
+      "sensor_id": "SIM-SENSOR-PAN-02",
+      "storage_zone": "pantry",
+      "timestamp": "2026-10-24T08:15:00Z",
+      "temperature_c": 18.0,
+      "humidity_percent": 48.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-PAN-006",
+      "sensor_id": "SIM-SENSOR-PAN-02",
+      "storage_zone": "pantry",
+      "timestamp": "2026-10-24T14:15:00Z",
+      "temperature_c": 19.0,
+      "humidity_percent": 50.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-STALE-001",
+      "sensor_id": "SIM-SENSOR-REF-OLD",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-23T06:00:00Z",
+      "temperature_c": 3.5,
+      "humidity_percent": 65.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-UNK-001",
+      "sensor_id": "SIM-SENSOR-WINE-01",
+      "storage_zone": "wine_cellar_custom",
+      "timestamp": "2026-10-24T12:00:00Z",
+      "temperature_c": 12.0,
+      "humidity_percent": 70.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-MAL-001",
+      "sensor_id": "SIM-SENSOR-MAL-01",
+      "storage_zone": "refrigerator",
+      "timestamp": "not-a-valid-timestamp",
+      "temperature_c": 3.5,
+      "humidity_percent": 65.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-MAL-002",
+      "sensor_id": "SIM-SENSOR-MAL-01",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T12:00:00Z",
+      "temperature_c": "three_point_five",
+      "humidity_percent": 65.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-MAL-003",
+      "sensor_id": "SIM-SENSOR-MAL-01",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T12:15:00Z",
+      "temperature_c": 3.5,
+      "humidity_percent": 150.0,
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    },
+    {
+      "reading_id": "SIM-MAL-004",
+      "sensor_id": "SIM-SENSOR-MAL-01",
+      "storage_zone": "refrigerator",
+      "timestamp": "2026-10-24T12:30:00Z",
+      "door_open": false,
+      "power_cut_hours": 0.0,
+      "simulated": true
+    }
+  ]
+}

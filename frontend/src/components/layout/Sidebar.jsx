@@ -12,6 +12,7 @@ import {
   Settings,
   Sparkles,
 } from 'lucide-react'
+import logoImg from '../../assets/logo.png'
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -30,8 +31,8 @@ export function Sidebar() {
       <div className="flex flex-col gap-6">
         {/* Brand identity */}
         <div className="flex items-center gap-3 px-2 py-1">
-          <div className="w-10 h-10 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-xl shadow-sm shadow-emerald-800/20">
-            🥑
+          <div className="w-10 h-10 rounded-2xl bg-white border border-emerald-100 p-1 flex items-center justify-center shadow-sm shadow-emerald-900/10 overflow-hidden">
+            <img src={logoImg} alt="SaveBite Logo" className="w-full h-full object-contain" />
           </div>
           <div>
             <span className="font-extrabold text-lg tracking-tight text-emerald-950 block leading-tight">
@@ -53,10 +54,9 @@ export function Sidebar() {
                 to={item.path}
                 className={({ isActive }) => `
                   flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150
-                  ${
-                    isActive
-                      ? 'bg-emerald-800 text-white shadow-xs shadow-emerald-900/10'
-                      : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
+                  ${isActive
+                    ? 'bg-emerald-800 text-white shadow-xs shadow-emerald-900/10'
+                    : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
                   }
                 `}
               >
@@ -64,17 +64,15 @@ export function Sidebar() {
                   <>
                     <div className="flex items-center gap-3">
                       <Icon
-                        className={`w-4 h-4 ${
-                          isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-600'
-                        }`}
+                        className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-600'
+                          }`}
                       />
                       <span>{item.name}</span>
                     </div>
                     {item.badge && (
                       <span
-                        className={`text-[9px] uppercase px-1.5 py-0.5 rounded-full font-bold ${
-                          isActive ? 'bg-emerald-950 text-emerald-200' : 'bg-emerald-100 text-emerald-800'
-                        }`}
+                        className={`text-[9px] uppercase px-1.5 py-0.5 rounded-full font-bold ${isActive ? 'bg-emerald-950 text-emerald-200' : 'bg-emerald-100 text-emerald-800'
+                          }`}
                       >
                         {item.badge}
                       </span>
@@ -87,21 +85,8 @@ export function Sidebar() {
         </nav>
       </div>
 
-      {/* Footer Info Card: Climate Telemetry Pill */}
-      <div className="flex flex-col gap-3">
-        <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/60">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[11px] font-bold text-emerald-900 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Fridge Sensor
-            </span>
-            <span className="text-[10px] font-semibold text-emerald-700">3.8°C</span>
-          </div>
-          <p className="text-[10px] text-slate-500 leading-normal">
-            Storage climate optimal. 6 items protected from spoilage.
-          </p>
-        </div>
-
+      {/* Footer Navigation */}
+      <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
         <NavLink
           to="/settings"
           className={({ isActive }) => `

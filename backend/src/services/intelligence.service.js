@@ -64,6 +64,32 @@ export class IntelligenceService {
   }
 
   /**
+   * Map AI priority category ("Red", "Orange", "Yellow", "Green", "Black")
+   * to existing database freshness_bucket ("critical", "use_soon", "fresh", "expired").
+   *
+   * @param {string} priorityCategory
+   * @param {number|null} adjDaysLeft
+   * @param {number} useFirstScore
+   * @param {string|null} expiryDate
+   * @returns {'fresh' | 'use_soon' | 'critical' | 'expired'}
+   */
+  _mapPriorityCategory(priorityCategory, adjDaysLeft, useFirstScore, expiryDate) {
+    switch (priorityCategory) {
+      case 'Red':
+        return 'critical';
+      case 'Orange':
+      case 'Yellow':
+        return 'use_soon';
+      case 'Green':
+        return 'fresh';
+      case 'Black':
+      default:
+        // Unscoreable item or unknown: fall back to calendar / days left logic
+        return this._determineFreshnessBucket(adjDaysLeft, useFirstScore, expiryDate);
+    }
+  }
+
+  /**
    * Run intelligence analysis for a single household.
    *
    * @param {string} householdId
@@ -122,29 +148,48 @@ export class IntelligenceService {
     }
 
     // 4. Score Use-First priority across active household items
-    const useFirstPayloads = activeItems.map((item) => {
-      const estimate = itemEstimates.get(item.id);
-      return {
-        id: item.id,
-        name: item.name,
-        category: item.category,
-        expiry_date: item.expiry_date,
-        adj_days_left: estimate?.adj_days_left ?? item.adj_days_left,
-        is_opened: Boolean(item.is_opened),
-        storage_location: item.storage_location
-      };
-    });
+    const scoreableItems = [];
+    for (const item of activeItems) {
+      if (!item.purchase_date) {
+        logger.warn({ itemId: item.id, name: item.name }, 'Skipping AI priority scoring: purchase_date is null (required field)');
+        continue;
+      }
+
+      // Format purchase_date to YYYY-MM-DD
+      const purchaseDateStr = typeof item.purchase_date === 'string'
+        ? item.purchase_date.split('T')[0]
+        : new Date(item.purchase_date).toISOString().split('T')[0];
+
+      // Format package_use_by_date to YYYY-MM-DD if present
+      let packageUseByDate = null;
+      if (item.expiry_date) {
+        packageUseByDate = typeof item.expiry_date === 'string'
+          ? item.expiry_date.split('T')[0]
+          : new Date(item.expiry_date).toISOString().split('T')[0];
+      }
+
+      scoreableItems.push({
+        item_id: item.id,
+        product_name: item.name,
+        purchase_date: purchaseDateStr,
+        opened: Boolean(item.is_opened),
+        storage_zone: item.storage_location || null,
+        package_use_by_date: packageUseByDate
+      });
+    }
 
     const useFirstScores = new Map();
-    try {
-      const scoreRes = await this.aiClient.scoreUseFirst(useFirstPayloads);
-      if (scoreRes && Array.isArray(scoreRes.scores)) {
-        for (const s of scoreRes.scores) {
-          useFirstScores.set(s.item_id, s);
+    if (scoreableItems.length > 0) {
+      try {
+        const scoreRes = await this.aiClient.scoreUseFirst(scoreableItems);
+        if (scoreRes && Array.isArray(scoreRes.scored_items)) {
+          for (const s of scoreRes.scored_items) {
+            useFirstScores.set(s.item_id, s);
+          }
         }
+      } catch (err) {
+        logger.warn({ householdId, error: err.message }, 'AI Use-First scoring unavailable; preserving existing scores');
       }
-    } catch (err) {
-      logger.warn({ householdId, error: err.message }, 'AI Use-First scoring unavailable; preserving existing scores');
     }
 
     // 5. Update inventory items & emit transition alerts
@@ -159,11 +204,13 @@ export class IntelligenceService {
         ? (estimate.adj_days_left !== null ? Number(estimate.adj_days_left) : null)
         : (item.adj_days_left !== null && item.adj_days_left !== undefined ? Number(item.adj_days_left) : null);
 
-      const useFirstScore = scoreData?.use_first_score !== undefined
-        ? Math.round(Number(scoreData.use_first_score))
+      const useFirstScore = (scoreData && scoreData.score !== null && scoreData.score !== undefined)
+        ? Math.round(Number(scoreData.score))
         : (item.use_first_score ? Math.round(Number(item.use_first_score)) : 0);
 
-      const newBucket = scoreData?.freshness_bucket || this._determineFreshnessBucket(adjDaysLeft, useFirstScore, item.expiry_date);
+      const newBucket = scoreData
+        ? this._mapPriorityCategory(scoreData.priority_category, adjDaysLeft, useFirstScore, item.expiry_date)
+        : this._determineFreshnessBucket(adjDaysLeft, useFirstScore, item.expiry_date);
       const previousBucket = item.freshness_bucket || 'fresh';
 
       // Update database intelligence fields

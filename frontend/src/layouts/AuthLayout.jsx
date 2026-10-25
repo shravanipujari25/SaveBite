@@ -1,6 +1,7 @@
 import React from 'react'
 import { Outlet, Link } from 'react-router-dom'
 import { ShieldCheck, Sparkles } from 'lucide-react'
+import logoImg from '../assets/logo.png'
 
 export function AuthLayout() {
   return (
@@ -8,8 +9,8 @@ export function AuthLayout() {
       {/* Brand Header */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <Link to="/" className="inline-flex items-center gap-2 mb-3">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-800 text-white flex items-center justify-center text-2xl shadow-md shadow-emerald-900/20">
-            🥑
+          <div className="w-12 h-12 rounded-2xl bg-white border border-emerald-100 p-1 flex items-center justify-center shadow-md shadow-emerald-900/10 overflow-hidden">
+            <img src={logoImg} alt="SaveBite Logo" className="w-full h-full object-contain" />
           </div>
           <span className="font-extrabold text-2xl text-emerald-950 tracking-tight">SaveBite</span>
         </Link>

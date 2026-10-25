@@ -1,0 +1,37 @@
+product_id,product_name,category,base_shelf_life_days,storage_zone,opened_shelf_life_days,sensitivity,source
+GRC001,Apple,Fruit,30,refrigerator,2,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC002,Banana,Fruit,5,pantry,1,high,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC003,Strawberry,Fruit,5,refrigerator,2,high,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC004,Orange,Fruit,21,refrigerator,2,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC005,Avocado,Fruit,4,pantry,1,high,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC006,Lemon,Fruit,21,refrigerator,3,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC007,Blueberries,Fruit,7,refrigerator,2,high,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC008,Tomato,Vegetable,7,pantry,2,medium,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC009,Potato,Vegetable,30,pantry,,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC010,Onion,Vegetable,30,pantry,7,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC011,Spinach,Vegetable,5,refrigerator,3,high,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC012,Carrot,Vegetable,21,refrigerator,14,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC013,Broccoli,Vegetable,5,refrigerator,3,high,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC014,Bell Pepper,Vegetable,10,refrigerator,3,medium,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC015,Lettuce,Vegetable,7,refrigerator,3,high,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC016,Milk,Dairy,7,refrigerator,5,high,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC017,Cheddar Cheese,Dairy,90,refrigerator,21,medium,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC018,Yogurt,Dairy,14,refrigerator,7,high,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC019,Butter,Dairy,60,refrigerator,30,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC020,Mozzarella Cheese,Dairy,21,refrigerator,7,high,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC021,White Rice,Grain,730,pantry,365,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC022,Rolled Oats,Grain,365,pantry,180,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC023,Whole Wheat Bread,Grain,7,pantry,5,high,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC024,Dry Pasta,Grain,730,pantry,365,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC025,All-Purpose Flour,Grain,240,pantry,180,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC026,Canned Tuna,Packaged Food,1095,pantry,2,low,https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/food-safety-basics/shelf-stable-food-safety
+GRC027,Canned Black Beans,Packaged Food,730,pantry,4,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC028,Peanut Butter,Packaged Food,270,pantry,90,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC029,Canned Tomato Sauce,Packaged Food,540,pantry,5,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC030,Eggs,Protein Food,28,refrigerator,,high,https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/eggs/shell-eggs-farm-table
+GRC031,Fresh Chicken Breast,Protein Food,2,refrigerator,1,high,https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/poultry/chicken-farm-table
+GRC032,Ground Beef,Protein Food,2,refrigerator,1,high,https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/meat/ground-beef-and-food-safety
+GRC033,Tofu,Protein Food,30,refrigerator,3,high,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC034,Fresh Salmon Fillet,Protein Food,2,refrigerator,1,high,https://www.fda.gov/food/buy-store-serve-safe-food/selecting-and-serving-fresh-and-frozen-seafood-safely
+GRC035,Olive Oil,Pantry Staple,540,pantry,180,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app
+GRC036,Honey,Pantry Staple,730,pantry,730,low,https://www.foodsafety.gov/keep-food-safe/foodkeeper-app

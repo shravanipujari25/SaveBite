@@ -94,14 +94,36 @@ export function RecipesPage() {
           </div>
           <div className="space-y-1">
             <h3 className="text-base font-bold text-slate-900">
-              AI Recipe Rescue Service Unreachable
+              Recipe Suggestions Unavailable
             </h3>
             <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
               {error}
             </p>
           </div>
+          <div className="pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setLoading(true);
+                setError(null);
+                api.recipes.getWasteLessSuggestions().then((res) => {
+                  if (res.error) setError(res.error);
+                  else if (res.data) {
+                    setRecipes(res.data);
+                    setSelectedRecipe(res.data[0] || null);
+                  }
+                }).catch((err) => {
+                  setError(err.message || 'Error communicating with recipe rescue service');
+                }).finally(() => setLoading(false));
+              }}
+            >
+              Retry
+            </Button>
+          </div>
           <p className="text-[11px] text-slate-400">
-            Note: Recipe generation connects to the backend Python FastAPI AI service. If the AI model service is offline, you can enable Demo Mode in settings to view sample recipes.
+            Note: Recipe suggestions require the AI microservice running at http://localhost:8000.
           </p>
         </Card>
       ) : recipes.length === 0 ? (

@@ -217,23 +217,53 @@ describe('Multi-Item Ingredient Consumption & Recipe Rescue Suite (Phase 4)', ()
       // Mock AI recipe response
       globalThis.fetch = async (url) => {
         const urlStr = String(url);
-        if (urlStr.includes('/recipes/rescue')) {
+        if (urlStr.includes('/recipes/recommend')) {
           return {
             ok: true,
             status: 200,
             json: async () => ({
-              recipes: [
+              as_of_date: '2026-10-25',
+              total_recipes_evaluated: 25,
+              total_recommendations: 1,
+              recommendations: [
                 {
-                  id: 'rec-1',
-                  title: 'Fresh Tomato Basil Pasta',
-                  description: 'A quick 15-minute pasta dish using ripe tomatoes.',
-                  prep_time_minutes: 5,
-                  cook_time_minutes: 10,
+                  recipe_id: 'rec-1',
+                  name: 'Fresh Tomato Basil Pasta',
+                  rank: 1,
+                  score: 85.0,
+                  score_breakdown: {
+                    ingredient_availability: 40.0,
+                    near_expiry_utilization: 30.0,
+                    use_first_utilization: 15.0,
+                    missing_ingredient_component: 0.0
+                  },
+                  preparation_status: 'fully_preparable',
+                  matched_ingredients: [
+                    {
+                      ingredient_name: 'Ripe Tomatoes',
+                      required_quantity: 2.0,
+                      required_unit: 'unit',
+                      available_quantity: 4.0,
+                      available_unit: 'piece',
+                      missing_quantity: 0.0,
+                      status: 'available',
+                      optional: false,
+                      near_expiry: true,
+                      priority_category: 'Red',
+                      matched_inventory_ids: [tomatoId]
+                    }
+                  ],
+                  use_first_ingredients: ['Ripe Tomatoes'],
+                  near_expiry_ingredients: ['Ripe Tomatoes'],
+                  missing_ingredients: [],
+                  insufficient_ingredients: [],
+                  unavailable_ingredients: [],
+                  optional_missing_ingredients: [],
+                  reasons: ['Prioritizes groceries approaching expiry: Ripe Tomatoes.'],
+                  preparation_time_minutes: 15,
                   servings: 2,
-                  ingredients: ['Ripe Tomatoes', 'Pasta', 'Olive Oil', 'Garlic'],
                   instructions: ['Boil pasta', 'Saute tomatoes with garlic', 'Combine and serve'],
-                  rescued_ingredients: ['Ripe Tomatoes'],
-                  waste_reduction_score: 80
+                  simulated: false
                 }
               ]
             })

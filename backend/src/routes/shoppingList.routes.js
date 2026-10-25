@@ -6,6 +6,8 @@ import { validate } from '../middleware/validate.js';
 import {
   createShoppingListItemSchema,
   updateShoppingListItemSchema,
+  purchaseShoppingListItemSchema,
+  evaluateDuplicateSchema,
   shoppingListItemIdParamSchema
 } from '../schemas/shoppingList.schema.js';
 
@@ -13,6 +15,19 @@ const router = Router();
 
 // Household-scoped routes protected by JWT authentication
 router.use(authenticate, requireHousehold);
+
+// GET /api/v1/shopping-list/recommendations - Smart Low-Stock & Consumption Recommendations
+router.get(
+  '/recommendations',
+  shoppingListController.getRecommendations
+);
+
+// POST /api/v1/shopping-list/evaluate-duplicate - Pre-check item duplicates against pantry
+router.post(
+  '/evaluate-duplicate',
+  validate({ body: evaluateDuplicateSchema }),
+  shoppingListController.evaluateDuplicate
+);
 
 // POST /api/v1/shopping-list - Create shopping list item
 router.post(
@@ -48,10 +63,10 @@ router.delete(
   shoppingListController.deleteItem
 );
 
-// POST /api/v1/shopping-list/:id/purchase - Mark item purchased
+// POST /api/v1/shopping-list/:id/purchase - Mark item purchased and update inventory
 router.post(
   '/:id/purchase',
-  validate({ params: shoppingListItemIdParamSchema }),
+  validate({ params: shoppingListItemIdParamSchema, body: purchaseShoppingListItemSchema }),
   shoppingListController.markPurchased
 );
 

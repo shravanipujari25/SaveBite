@@ -42,6 +42,44 @@ export class ShoppingListController {
   };
 
   /**
+   * GET /api/v1/shopping-list/recommendations
+   * Generate low-stock and consumption-based grocery recommendations.
+   */
+  getRecommendations = async (req, res, next) => {
+    try {
+      const result = await this.service.getRecommendations(req.household.id, req.query);
+      return res.status(200).json({
+        status: 'success',
+        data: result
+      });
+    } catch (err) {
+      return next(err);
+    }
+  };
+
+  /**
+   * POST /api/v1/shopping-list/evaluate-duplicate
+   * Pre-check item against pantry inventory and active lists before adding.
+   */
+  evaluateDuplicate = async (req, res, next) => {
+    try {
+      const { name, quantity, unit } = req.body;
+      const result = await this.service.evaluateDuplicates(
+        req.household.id,
+        name,
+        quantity,
+        unit
+      );
+      return res.status(200).json({
+        status: 'success',
+        data: result
+      });
+    } catch (err) {
+      return next(err);
+    }
+  };
+
+  /**
    * GET /api/v1/shopping-list/:id
    * Get single shopping list item by ID.
    */
@@ -95,14 +133,19 @@ export class ShoppingListController {
 
   /**
    * POST /api/v1/shopping-list/:id/purchase
-   * Mark shopping list item as purchased.
+   * Mark shopping list item as purchased and record into actual pantry inventory.
    */
   markPurchased = async (req, res, next) => {
     try {
-      const item = await this.service.markPurchased(req.household.id, req.params.id);
+      const result = await this.service.markPurchased(
+        req.household.id,
+        req.user.id,
+        req.params.id,
+        req.body
+      );
       return res.status(200).json({
         status: 'success',
-        data: { item }
+        data: result
       });
     } catch (err) {
       return next(err);

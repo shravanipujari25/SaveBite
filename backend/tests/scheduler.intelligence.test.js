@@ -44,6 +44,7 @@ describe('Scheduled Intelligence & Risk Alerts Suite (Phase 4)', () => {
       storage_location: 'refrigerator',
       status: 'active',
       is_opened: true,
+      purchase_date: '2026-10-23',
       expiry_date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
       adj_days_left: null,
       use_first_score: 0,
@@ -51,7 +52,7 @@ describe('Scheduled Intelligence & Risk Alerts Suite (Phase 4)', () => {
       created_at: new Date().toISOString()
     });
 
-    // Mock AI responses: /shelf-life/estimate and /use-first/score
+    // Mock AI responses: /shelf-life/estimate and /priority/score
     globalThis.fetch = async (url) => {
       const urlStr = String(url);
       if (urlStr.includes('/shelf-life/estimate')) {
@@ -66,17 +67,24 @@ describe('Scheduled Intelligence & Risk Alerts Suite (Phase 4)', () => {
         };
       }
 
-      if (urlStr.includes('/use-first/score')) {
+      if (urlStr.includes('/priority/score')) {
         return {
           ok: true,
           status: 200,
           json: async () => ({
-            scores: [
+            as_of_date: '2026-10-25',
+            total_items: 1,
+            scored_items: [
               {
                 item_id: itemId,
-                use_first_score: 85,
-                freshness_bucket: 'critical',
-                recommendation: 'Use in cooking or freeze immediately'
+                product_name: 'Organic Whole Milk',
+                product_found: true,
+                rank: 1,
+                score: 85,
+                priority_category: 'Red',
+                estimated_remaining_days: 1,
+                warnings: [],
+                explanation: 'Critical expiry risk'
               }
             ]
           })
@@ -127,6 +135,7 @@ describe('Scheduled Intelligence & Risk Alerts Suite (Phase 4)', () => {
       storage_location: 'refrigerator',
       status: 'active',
       is_opened: false,
+      purchase_date: '2026-10-24',
       expiry_date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
       adj_days_left: 1.0,
       use_first_score: 85,
@@ -155,12 +164,26 @@ describe('Scheduled Intelligence & Risk Alerts Suite (Phase 4)', () => {
           json: async () => ({ adj_days_left: 1.0, confidence: 0.9 })
         };
       }
-      if (urlStr.includes('/use-first/score')) {
+      if (urlStr.includes('/priority/score')) {
         return {
           ok: true,
           status: 200,
           json: async () => ({
-            scores: [{ item_id: itemId, use_first_score: 85, freshness_bucket: 'critical' }]
+            as_of_date: '2026-10-25',
+            total_items: 1,
+            scored_items: [
+              {
+                item_id: itemId,
+                product_name: 'Baby Spinach',
+                product_found: true,
+                rank: 1,
+                score: 85,
+                priority_category: 'Red',
+                estimated_remaining_days: 1,
+                warnings: [],
+                explanation: 'Critical expiry risk'
+              }
+            ]
           })
         };
       }
@@ -186,6 +209,7 @@ describe('Scheduled Intelligence & Risk Alerts Suite (Phase 4)', () => {
       unit: 'cup',
       storage_location: 'refrigerator',
       status: 'active',
+      purchase_date: '2026-10-22',
       expiry_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
       adj_days_left: null,
       use_first_score: 0,
@@ -216,6 +240,7 @@ describe('Scheduled Intelligence & Risk Alerts Suite (Phase 4)', () => {
       name: 'Item H1',
       status: 'active',
       quantity: 1,
+      purchase_date: '2026-10-20',
       created_at: new Date().toISOString()
     });
 
@@ -227,6 +252,7 @@ describe('Scheduled Intelligence & Risk Alerts Suite (Phase 4)', () => {
       name: 'Item H2',
       status: 'active',
       quantity: 1,
+      purchase_date: '2026-10-21',
       created_at: new Date().toISOString()
     });
 
@@ -235,8 +261,8 @@ describe('Scheduled Intelligence & Risk Alerts Suite (Phase 4)', () => {
       const body = JSON.parse(opts.body || '{}');
 
       // Verify that when items are processed, only one household's items are passed
-      if (urlStr.includes('/use-first/score')) {
-        const itemIds = body.items.map((i) => i.id);
+      if (urlStr.includes('/priority/score')) {
+        const itemIds = body.items.map((i) => i.item_id);
         const hasH1 = itemIds.includes(itemH1);
         const hasH2 = itemIds.includes(itemH2);
         // Can never mix both households together in a single AI payload
@@ -245,7 +271,19 @@ describe('Scheduled Intelligence & Risk Alerts Suite (Phase 4)', () => {
           ok: true,
           status: 200,
           json: async () => ({
-            scores: itemIds.map((id) => ({ item_id: id, use_first_score: 40, freshness_bucket: 'fresh' }))
+            as_of_date: '2026-10-25',
+            total_items: itemIds.length,
+            scored_items: itemIds.map((id, index) => ({
+              item_id: id,
+              product_name: 'Test Product',
+              product_found: true,
+              rank: index + 1,
+              score: 40,
+              priority_category: 'Green',
+              estimated_remaining_days: 10,
+              warnings: [],
+              explanation: 'OK'
+            }))
           })
         };
       }
