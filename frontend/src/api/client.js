@@ -13,6 +13,7 @@ import initialPantryItems from '../mocks/pantryItems.json'
 import initialShoppingList from '../mocks/shoppingList.json'
 import initialRecipes from '../mocks/recipes.json'
 import initialStorageAlerts from '../mocks/storageAlerts.json'
+import sensorSimulator from '../services/sensorSimulator'
 
 // Local storage keys for interactive mock persistence
 const STORAGE_KEYS = {
@@ -125,138 +126,77 @@ export const api = {
   // ==================== IOT STORAGE & SENSORS ====================
   storage: {
     async getSensors() {
-      if (USE_MOCKS) {
-        const { getCurrentSensors } = await import('../services/sensorSimulator')
-        return { data: getCurrentSensors(), error: null }
+      // Frontend-based simulated sensor data (Replaces real-time hardware ESP32 dependency)
+      try {
+        const payload = sensorSimulator.getCurrentSensorPayload()
+        return { data: payload.sensors, error: null }
+      } catch (simErr) {
+        return { data: [], error: simErr.message }
       }
-
-      const devRes = await request('/devices')
-      if (devRes.error) {
-        return { data: null, error: devRes.error, status: devRes.status }
-      }
-
-      const devices = devRes.data?.devices || devRes.data || []
-      const sensors = await Promise.all(
-        devices.map(async (dev) => {
-          // Fetch latest readings for device (up to 20 for live charts)
-          const readRes = await request(`/devices/${dev.id}/readings?limit=20`)
-          const readings = readRes.data?.readings || []
-          const latest = readings[0] || null
-
-          const temp = latest?.temperature_c !== undefined && latest?.temperature_c !== null ? Number(latest.temperature_c) : null
-          const humidity = latest?.humidity_percent !== undefined && latest?.humidity_percent !== null ? Number(latest.humidity_percent) : null
-          const airQualityRaw = latest?.air_quality_raw !== undefined && latest?.air_quality_raw !== null ? Number(latest.air_quality_raw) : null
-
-          const history = readings.slice().reverse().map(r => ({
-            time: r.recorded_at,
-            temperature: r.temperature_c !== null && r.temperature_c !== undefined ? Number(r.temperature_c) : null,
-            humidity: r.humidity_percent !== null && r.humidity_percent !== undefined ? Number(r.humidity_percent) : null,
-            gasValue: r.air_quality_raw !== null && r.air_quality_raw !== undefined ? Number(r.air_quality_raw) : null
-          }))
-
-          return {
-            nodeId: dev.id,
-            zone: dev.zone === 'refrigerator' ? 'fridge' : (dev.zone || 'fridge'),
-            name: dev.name,
-            locationName: `${dev.name} (${dev.zone || 'refrigerator'})`,
-            sourceType: dev.source_type || 'physical',
-            temperature: temp !== null ? Number(temp.toFixed(1)) : null,
-            unitTemp: '°C',
-            humidity: humidity !== null ? Number(humidity.toFixed(0)) : null,
-            unitHumidity: '%',
-            gasValue: airQualityRaw !== null && airQualityRaw !== undefined ? Number(airQualityRaw) : null,
-            deviceCode: dev.device_code || dev.id,
-            status: dev.status === 'active' || dev.status === 'online' ? 'online' : 'offline',
-            lastSync: latest?.recorded_at || dev.created_at,
-            readingsHistory: history
-          }
-        })
-      )
-
-      return { data: sensors, error: null }
     },
 
     async getAlerts() {
-      if (USE_MOCKS) {
-        const { getCurrentAlerts } = await import('../services/sensorSimulator')
-        return { data: getCurrentAlerts(), error: null }
+      try {
+        const payload = sensorSimulator.getCurrentSensorPayload()
+        return { data: payload.alerts, error: null }
+      } catch (simErr) {
+        return { data: [], error: simErr.message }
       }
-
-      const res = await request('/notifications?limit=20')
-      if (res.error) {
-        return { data: null, error: res.error, status: res.status }
-      }
-
-      const rawAlerts = res.data?.notifications || res.data || []
-      const mapped = (Array.isArray(rawAlerts) ? rawAlerts : []).map((a) => ({
-        id: a.id,
-        severity: a.severity || 'warning',
-        type: a.type || 'threshold_alert',
-        sensorNodeId: a.device_id,
-        zone: 'fridge',
-        title: a.title,
-        message: a.message,
-        recommendation: a.severity === 'critical'
-          ? 'Immediate check recommended. Verify door closure and cooling system.'
-          : 'Monitor climate conditions closely.',
-        timestamp: a.created_at,
-        isRead: Boolean(a.is_read),
-      }))
-
-      return { data: mapped, error: null }
     },
 
     async markAlertRead(alertId) {
-      if (USE_MOCKS) {
-        const alerts = getStoredOrInitial(STORAGE_KEYS.ALERTS, initialStorageAlerts)
-        const updated = alerts.map((a) =>
-          a.id === alertId ? { ...a, isRead: true } : a
-        )
-        setStored(STORAGE_KEYS.ALERTS, updated)
-        return { data: { success: true }, error: null }
-      }
-      return request(`/notifications/${alertId}/read`, { method: 'PATCH' })
+      return { data: { success: true }, error: null }
     },
 
     async markAllAlertsRead() {
-      if (USE_MOCKS) {
-        const alerts = getStoredOrInitial(STORAGE_KEYS.ALERTS, initialStorageAlerts)
-        const updated = alerts.map((a) => ({ ...a, isRead: true }))
-        setStored(STORAGE_KEYS.ALERTS, updated)
-        return { data: { success: true }, error: null }
-      }
-      return request('/notifications/read-all', { method: 'PATCH' })
+      return { data: { success: true }, error: null }
     },
 
     async startSimulation() {
-      if (USE_MOCKS) {
-        const sim = await import('../services/sensorSimulator')
-        sim.startSimulation()
-        return { data: { success: true }, error: null }
-      }
-      return { data: null, error: 'Hardware simulation is only available in mock mode.' }
+      const sim = await import('../services/sensorSimulator')
+      sim.startSimulation()
+      return { data: { success: true }, error: null }
     },
 
     async stopSimulation() {
-      if (USE_MOCKS) {
-        const sim = await import('../services/sensorSimulator')
-        sim.stopSimulation()
-        return { data: { success: true }, error: null }
-      }
-      return { data: null, error: 'Hardware simulation is only available in mock mode.' }
+      const sim = await import('../services/sensorSimulator')
+      sim.stopSimulation()
+      return { data: { success: true }, error: null }
+    },
+
+    async toggleSimulation() {
+      const sim = await import('../services/sensorSimulator')
+      sim.toggleSimulation()
+      return { data: { success: true }, error: null }
+    },
+
+    async setSimulationMode(mode) {
+      const sim = await import('../services/sensorSimulator')
+      sim.setSimulationMode(mode)
+      return { data: { success: true }, error: null }
+    },
+
+    async resetSimulation() {
+      const sim = await import('../services/sensorSimulator')
+      sim.resetSimulation()
+      return { data: { success: true }, error: null }
     },
 
     async getSimulationStatus() {
-      if (USE_MOCKS) {
-        try {
-          const sim = await import('../services/sensorSimulator')
-          const fn = sim.getSimulationStatus || sim.getSimulationInfo
-          return { data: fn ? fn() : { isRunning: false, lastUpdated: null }, error: null }
-        } catch (e) {
-          return { data: { isRunning: false, lastUpdated: null }, error: null }
+      try {
+        const sim = await import('../services/sensorSimulator')
+        const payload = sim.getCurrentSensorPayload()
+        return {
+          data: {
+            isRunning: payload.isRunning,
+            currentMode: payload.currentMode,
+            lastUpdated: payload.lastUpdated
+          },
+          error: null
         }
+      } catch (e) {
+        return { data: { isRunning: true, currentMode: 'fluctuating', lastUpdated: null }, error: null }
       }
-      return { data: { isRunning: false, activeScenario: 'Live Backend IoT Telemetry' }, error: null }
     },
   },
 
