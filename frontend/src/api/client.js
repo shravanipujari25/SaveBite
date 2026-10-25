@@ -138,37 +138,37 @@ export const api = {
       const devices = devRes.data?.devices || devRes.data || []
       const sensors = await Promise.all(
         devices.map(async (dev) => {
-          // Fetch latest reading for device
-          const readRes = await request(`/devices/${dev.id}/readings?limit=1`)
+          // Fetch latest readings for device (up to 20 for live charts)
+          const readRes = await request(`/devices/${dev.id}/readings?limit=20`)
           const readings = readRes.data?.readings || []
           const latest = readings[0] || null
 
-          const temp = latest?.temperature_c ?? 4.0
-          const humidity = latest?.humidity_percent ?? 65.0
-          const airQualityRaw = latest?.air_quality_raw ?? 150.0
+          const temp = latest?.temperature_c !== undefined && latest?.temperature_c !== null ? Number(latest.temperature_c) : null
+          const humidity = latest?.humidity_percent !== undefined && latest?.humidity_percent !== null ? Number(latest.humidity_percent) : null
+          const airQualityRaw = latest?.air_quality_raw !== undefined && latest?.air_quality_raw !== null ? Number(latest.air_quality_raw) : null
+
+          const history = readings.slice().reverse().map(r => ({
+            time: r.recorded_at,
+            temperature: r.temperature_c !== null && r.temperature_c !== undefined ? Number(r.temperature_c) : null,
+            humidity: r.humidity_percent !== null && r.humidity_percent !== undefined ? Number(r.humidity_percent) : null,
+            gasValue: r.air_quality_raw !== null && r.air_quality_raw !== undefined ? Number(r.air_quality_raw) : null
+          }))
 
           return {
             nodeId: dev.id,
             zone: dev.zone === 'refrigerator' ? 'fridge' : (dev.zone || 'fridge'),
             name: dev.name,
             locationName: `${dev.name} (${dev.zone || 'refrigerator'})`,
-            temperature: Number(temp.toFixed(1)),
-            targetTempRange: dev.zone === 'refrigerator'
-              ? { min: 1.5, max: 4.5 }
-              : dev.zone === 'freezer'
-              ? { min: -20.0, max: -16.0 }
-              : { min: 18.0, max: 23.0 },
+            sourceType: dev.source_type || 'physical',
+            temperature: temp !== null ? Number(temp.toFixed(1)) : null,
             unitTemp: '°C',
-            humidity: Number(humidity.toFixed(0)),
-            targetHumidityRange: { min: 60, max: 75 },
+            humidity: humidity !== null ? Number(humidity.toFixed(0)) : null,
             unitHumidity: '%',
-            ethyleneGasPpm: Number((airQualityRaw / 400).toFixed(2)),
-            ethyleneStatus: airQualityRaw > 300 ? 'Elevated' : 'Normal',
-            doorOpen: false,
-            doorOpenDurationSeconds: 0,
-            batteryLevel: 92,
+            gasValue: airQualityRaw !== null && airQualityRaw !== undefined ? Number(airQualityRaw) : null,
+            deviceCode: dev.device_code || dev.id,
             status: dev.status === 'active' || dev.status === 'online' ? 'online' : 'offline',
             lastSync: latest?.recorded_at || dev.created_at,
+            readingsHistory: history
           }
         })
       )

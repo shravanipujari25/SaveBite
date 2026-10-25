@@ -1,126 +1,109 @@
 import React from 'react'
 import { Card } from '../common/Card'
 import Badge from '../common/Badge'
-import { Thermometer, Droplets, Wind, Battery, Wifi, DoorOpen, DoorClosed } from 'lucide-react'
+import { Thermometer, Droplets, Wind, Wifi } from 'lucide-react'
 import { formatRelativeTime } from '../../utils/formatters'
 
 export function SensorGauge({ sensor }) {
-  const isOptimalTemp =
-    sensor.temperature >= sensor.targetTempRange.min &&
-    sensor.temperature <= sensor.targetTempRange.max
+  // Compute data freshness (under 30 seconds is live stream)
+  const syncTime = sensor.lastSync ? new Date(sensor.lastSync).getTime() : 0
+  const isLive = syncTime > 0 && Date.now() - syncTime < 30000
+
+  const gasVal = sensor.gasValue !== null && sensor.gasValue !== undefined ? sensor.gasValue : null
 
   return (
-    <Card className="flex flex-col justify-between">
+    <Card className="flex flex-col justify-between hover:shadow-md transition-shadow">
       <div>
         {/* Node Header */}
         <div className="flex items-start justify-between mb-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className={`w-2.5 h-2.5 rounded-full ${isLive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
               <h4 className="font-bold text-slate-900 text-sm">{sensor.name}</h4>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">{sensor.locationName}</p>
+            <p className="text-xs text-slate-500 mt-0.5 font-mono">ESP32 Hardware Node</p>
           </div>
 
           <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
-              <Battery className="w-3.5 h-3.5 text-slate-400" />
-              {sensor.batteryLevel}%
-            </span>
-            <Badge variant="fresh" size="sm">
-              Online
+            <Badge variant={isLive ? 'fresh' : 'neutral'} dot size="sm">
+              {isLive ? 'Real-Time Stream' : 'Offline / Standby'}
             </Badge>
           </div>
         </div>
 
-        {/* Telemetry Metric Tiles */}
-        <div className="grid grid-cols-2 gap-2.5 mb-4">
-          {/* Temperature */}
-          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/60">
-            <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-              <span className="flex items-center gap-1">
-                <Thermometer className="w-3.5 h-3.5 text-emerald-600" />
-                Temp
-              </span>
-              <span className="text-[10px] text-slate-400">
-                {sensor.targetTempRange.min}° to {sensor.targetTempRange.max}°
-              </span>
+        {/* 3 Primary Sensor Metrics: Temperature, Humidity, Gas Value */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-2">
+          {/* 1. Temperature */}
+          <div className="p-3.5 rounded-xl bg-emerald-50/50 border border-emerald-100 flex flex-col justify-between">
+            <div className="flex items-center gap-1.5 text-emerald-800 text-xs font-semibold mb-2">
+              <Thermometer className="w-4 h-4 text-emerald-600" />
+              <span>Temperature</span>
             </div>
-            <div className="text-xl font-black text-slate-900">
-              {sensor.temperature > 0 ? `+${sensor.temperature}` : sensor.temperature}
-              <span className="text-xs font-semibold text-slate-500 ml-0.5">
-                {sensor.unitTemp}
-              </span>
+            <div>
+              <div className="text-2xl font-black text-slate-900 tracking-tight">
+                {sensor.temperature !== null && sensor.temperature !== undefined ? (
+                  <>
+                    {sensor.temperature > 0 ? `+${sensor.temperature}` : sensor.temperature}
+                    <span className="text-sm font-bold text-slate-600 ml-1">°C</span>
+                  </>
+                ) : (
+                  <span className="text-xs text-amber-600 font-semibold">Sensor Failed</span>
+                )}
+              </div>
+              <p className="text-[10px] text-slate-500 mt-0.5">DHT11 Sensor</p>
             </div>
-            <span
-              className={`text-[10px] font-bold ${
-                isOptimalTemp ? 'text-emerald-700' : 'text-amber-600'
-              }`}
-            >
-              {isOptimalTemp ? 'Target range met' : 'Slight temperature variance'}
-            </span>
           </div>
 
-          {/* Humidity */}
-          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/60">
-            <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-              <span className="flex items-center gap-1">
-                <Droplets className="w-3.5 h-3.5 text-sky-600" />
-                Humidity
-              </span>
-              <span className="text-[10px] text-slate-400">
-                {sensor.targetHumidityRange.min}-{sensor.targetHumidityRange.max}%
-              </span>
+          {/* 2. Humidity */}
+          <div className="p-3.5 rounded-xl bg-sky-50/50 border border-sky-100 flex flex-col justify-between">
+            <div className="flex items-center gap-1.5 text-sky-800 text-xs font-semibold mb-2">
+              <Droplets className="w-4 h-4 text-sky-600" />
+              <span>Humidity</span>
             </div>
-            <div className="text-xl font-black text-slate-900">
-              {sensor.humidity}
-              <span className="text-xs font-semibold text-slate-500 ml-0.5">
-                {sensor.unitHumidity}
-              </span>
+            <div>
+              <div className="text-2xl font-black text-slate-900 tracking-tight">
+                {sensor.humidity !== null && sensor.humidity !== undefined ? (
+                  <>
+                    {sensor.humidity}
+                    <span className="text-sm font-bold text-slate-600 ml-1">%</span>
+                  </>
+                ) : (
+                  <span className="text-xs text-amber-600 font-semibold">Sensor Failed</span>
+                )}
+              </div>
+              <p className="text-[10px] text-slate-500 mt-0.5">DHT11 Sensor</p>
             </div>
-            <span className="text-[10px] font-bold text-sky-700">Good moisture</span>
-          </div>
-        </div>
-
-        {/* Ethylene Gas & Door Status */}
-        <div className="space-y-2 text-xs">
-          <div className="flex items-center justify-between p-2 rounded-lg bg-cream-50 border border-[#edebe4]">
-            <span className="flex items-center gap-2 text-slate-600">
-              <Wind className="w-3.5 h-3.5 text-amber-500" />
-              <span>Ethylene Gas Sensor:</span>
-            </span>
-            <span className="font-bold text-slate-900">
-              {sensor.ethyleneGasPpm} ppm ({sensor.ethyleneStatus})
-            </span>
           </div>
 
-          <div className="flex items-center justify-between p-2 rounded-lg bg-cream-50 border border-[#edebe4]">
-            <span className="flex items-center gap-2 text-slate-600">
-              {sensor.doorOpen ? (
-                <DoorOpen className="w-3.5 h-3.5 text-rose-500" />
-              ) : (
-                <DoorClosed className="w-3.5 h-3.5 text-emerald-600" />
-              )}
-              <span>Door Status:</span>
-            </span>
-            <span
-              className={`font-bold ${
-                sensor.doorOpen ? 'text-rose-600 animate-pulse' : 'text-slate-900'
-              }`}
-            >
-              {sensor.doorOpen ? 'Open Alert!' : 'Securely Closed'}
-            </span>
+          {/* 3. Gas Value */}
+          <div className="p-3.5 rounded-xl bg-amber-50/50 border border-amber-100 flex flex-col justify-between">
+            <div className="flex items-center gap-1.5 text-amber-800 text-xs font-semibold mb-2">
+              <Wind className="w-4 h-4 text-amber-600" />
+              <span>Gas Value</span>
+            </div>
+            <div>
+              <div className="text-2xl font-black text-slate-900 tracking-tight">
+                {gasVal !== null ? (
+                  gasVal
+                ) : (
+                  <span className="text-xs text-amber-600 font-semibold">Reading...</span>
+                )}
+              </div>
+              <p className="text-[10px] text-slate-500 mt-0.5">MQ-135 (ADC Raw)</p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Sync Footer */}
       <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-        <span className="flex items-center gap-1">
-          <Wifi className="w-3 h-3 text-emerald-500" />
-          <span>MQTT: telemetry/nodes/{sensor.nodeId}</span>
+        <span className="flex items-center gap-1 font-mono">
+          <Wifi className={`w-3 h-3 ${isLive ? 'text-emerald-500' : 'text-slate-400'}`} />
+          <span>Device: {sensor.deviceCode || sensor.nodeId}</span>
         </span>
-        <span>Synced {formatRelativeTime(sensor.lastSync)}</span>
+        <span className="font-mono">
+          {sensor.lastSync ? `Updated ${formatRelativeTime(sensor.lastSync)}` : 'Pending sync'}
+        </span>
       </div>
     </Card>
   )

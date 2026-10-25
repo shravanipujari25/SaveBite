@@ -7,8 +7,10 @@ export function useStorage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const loadData = useCallback(async () => {
-    setLoading(true)
+  const loadData = useCallback(async (isBackground = false) => {
+    if (!isBackground) {
+      setLoading(true)
+    }
     setError(null)
     try {
       const [sRes, aRes] = await Promise.all([
@@ -22,7 +24,9 @@ export function useStorage() {
     } catch (err) {
       setError(err.message || 'Failed to load storage telemetry')
     } finally {
-      setLoading(false)
+      if (!isBackground) {
+        setLoading(false)
+      }
     }
   }, [])
 

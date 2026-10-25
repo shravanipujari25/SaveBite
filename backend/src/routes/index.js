@@ -4,6 +4,7 @@ import inventoryRoutes from './inventory.routes.js';
 import dashboardRoutes from './dashboard.routes.js';
 import deviceRoutes from './device.routes.js';
 import telemetryRoutes from './telemetry.routes.js';
+import deviceTelemetryRoutes from './deviceTelemetry.routes.js';
 import notificationRoutes from './notification.routes.js';
 import receiptRoutes from './receipt.routes.js';
 import barcodeRoutes from './barcode.routes.js';
@@ -37,7 +38,8 @@ router.use('/dashboard', dashboardRoutes);
 // Device management endpoints
 router.use('/devices', deviceRoutes);
 
-// Telemetry ingestion endpoints
+// Telemetry ingestion endpoints (hardware direct + authenticated app)
+router.use('/telemetry', deviceTelemetryRoutes);
 router.use('/telemetry', telemetryRoutes);
 
 // Notifications endpoints

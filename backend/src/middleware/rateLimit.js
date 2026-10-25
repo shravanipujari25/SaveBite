@@ -55,14 +55,15 @@ export const aiLimiter = rateLimit({
 
 /**
  * High-throughput rate limiter for IoT telemetry ingestion.
+ * Allows continuous streaming without hitting 429 Too Many Requests.
  */
 export const telemetryLimiter = rateLimit({
   windowMs: env.RATE_LIMIT_WINDOW_MS,
-  max: env.TELEMETRY_RATE_LIMIT_MAX || 300,
+  max: env.TELEMETRY_RATE_LIMIT_MAX || 10000,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   handler: rateLimitHandler,
-  skip: () => env.NODE_ENV === 'test'
+  skip: () => env.NODE_ENV === 'test' || env.NODE_ENV === 'development'
 });
 
 /**
